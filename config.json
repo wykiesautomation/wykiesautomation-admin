@@ -1,4 +1,4 @@
 {
-  "apiBase": "YOUR_APPS_SCRIPT_WEBAPP_URL",
-  "adminAuthEndpoint": "YOUR_APPS_SCRIPT_ADMIN_AUTH_URL"
+  "apiBase": "https://script.google.com/macros/s/.../exec",
+  "adminAuthEndpoint": "https://script.google.com/macros/s/.../exec/auth"
 }

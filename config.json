@@ -1,4 +1,5 @@
+
 {
-  "apiBase": "https://script.google.com/macros/s/.../exec",
-  "adminAuthEndpoint": "https://script.google.com/macros/s/.../exec/auth"
+  "apiBase": "https://script.google.com/macros/s/.../exec"  "adminAuthEndpoint": "https://script.google.com/macros/s/.../exec",
 }
+

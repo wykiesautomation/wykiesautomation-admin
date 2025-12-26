@@ -1,7 +1,0 @@
-{
-  "env": "sandbox",
-  "sheetId": "12qRMe6pAPVaQtosZBnhVtpMwyNks7W8uY9PX1mF620k",
-  "appsScriptUrl": "https://script.google.com/macros/s/YOUR_WEB_APP_ID/exec",
-  "apiBase": "/api",
-  "adminPassphrase": "CHANGE_ME"
-}

@@ -1,0 +1,52 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="assets/css/admin.css">
+</head>
+<body>
+<header>
+  <img src="assets/img/logo-blue.svg" alt="Logo">
+  <h2>Admin Dashboard</h2>
+</header>
+<div class="container">
+  <div class="tabs">
+    <div class="tab active">Products</div>
+    <div class="tab">Gallery</div>
+    <div class="tab">Payments</div>
+    <div class="tab">Logs</div>
+  </div>
+  <div class="panel">
+    <h3>Products</h3>
+    <table class="table">
+      <thead><tr><th>SKU</th><th>Name</th><th>Price</th><th>Summary</th><th>Image URL</th><th>Active</th><th></th></tr></thead>
+      <tbody id="prod-tbody"></tbody>
+    </table>
+  </div>
+  <div class="panel" style="margin-top:12px">
+    <h3>Gallery Upload</h3>
+    <div id="gallery-drop" style="padding:40px;border:2px dashed #1f2a3a;border-radius:12px;text-align:center">Drag & drop images here</div>
+  </div>
+  <div class="panel" style="margin-top:12px">
+    <h3>Payments</h3>
+    <table class="table"><thead><tr><th>Timestamp</th><th>Invoice</th><th>OrderID</th><th>PayFastID</th><th>Email</th><th>SKU</th><th>Total</th><th>Released</th></tr></thead><tbody id="pay-tbody"></tbody></table>
+  </div>
+  <div class="panel" style="margin-top:12px">
+    <h3>Price Changes</h3>
+    <table class="table"><thead><tr><th>Timestamp</th><th>SKU</th><th>Old</th><th>New</th><th>By</th><th>IP</th></tr></thead><tbody id="log-tbody"></tbody></table>
+  </div>
+</div>
+<div id="toast" class="toast"></div>
+<div id="login" class="login">
+  <div class="card">
+    <h3>Enter Admin Passphrase</h3>
+    <input id="passphrase" class="input" type="password" placeholder="Passphrase">
+    <button id="loginBtn" class="btn" style="margin-top:10px">Enter</button>
+  </div>
+</div>
+<script src="assets/js/admin.js"></script>
+</body>
+</html>

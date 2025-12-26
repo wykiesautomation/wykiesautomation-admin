@@ -1,0 +1,121 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Wykies Automation — Admin</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="assets/css/admin.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <img src="../assets/img/logo-blue.png" alt="Wykies Automation" />
+      <span>Admin</span>
+    </div>
+    <div class="user-area">
+      <span id="whoami">Signed out</span>
+      <button id="btnSignIn" class="btn primary">Sign in with Google</button>
+      <button id="btnSignOut" class="btn" style="display:none;">Sign out</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <aside class="sidebar">
+      <button class="nav-btn active" data-tab="products">Products</button>
+      <button class="nav-btn" data-tab="payments">Payments</button>
+      <button class="nav-btn" data-tab="logs">Logs</button>
+      <button class="nav-btn" data-tab="settings">Settings</button>
+    </aside>
+
+    <section class="content">
+      <div class="tab active" id="tab-products">
+        <div class="toolbar">
+          <h2>Products</h2>
+          <button id="btnRefreshProducts" class="btn">Refresh</button>
+        </div>
+        <div class="card">
+          <table class="grid" id="gridProducts">
+            <thead>
+              <tr>
+                <th>SKU</th><th>Name</th><th>Price (incl. VAT)</th><th>Active</th>
+                <th>imageUrl</th><th>docUrl</th><th>trialUrl</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="tab" id="tab-payments">
+        <div class="toolbar">
+          <h2>Payments (ITN)</h2>
+          <button id="btnRefreshPayments" class="btn">Refresh</button>
+        </div>
+        <div class="card">
+          <table class="grid" id="gridPayments">
+            <thead>
+              <tr>
+                <th>Timestamp</th><th>InvoiceNo</th><th>OrderID</th><th>pf_payment_id</th>
+                <th>Email</th><th>SKU</th><th>TotalInclVAT</th><th>ReleasedAt</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="tab" id="tab-logs">
+        <div class="toolbar">
+          <h2>Logs</h2>
+          <button id="btnRefreshLogs" class="btn">Refresh</button>
+        </div>
+        <div class="card">
+          <table class="grid" id="gridLogs">
+            <thead><tr><th>Timestamp</th><th>Event</th><th>SKU</th><th>User</th><th>Notes</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="tab" id="tab-settings">
+        <div class="card">
+          <h2>Settings</h2>
+          <p><b>Admin subdomain:</b> admin.wykiesautomation.co.za</p>
+          <p><b>Allowlist email:</b> wykiesautomation@gmail.com</p>
+          <p><b>API base:</b> <code id="cfgApiBase"></code></p>
+          <p><b>Mode:</b> <span id="cfgMode">live</span></p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <template id="rowProduct">
+    <tr>
+      <td class="sku"></td>
+      <td><input class="name" type="text" /></td>
+      <td><input class="price" type="number" min="0" step="0.01" /></td>
+      <td><input class="active" type="checkbox" /></td>
+      <td><input class="imageUrl" type="url" placeholder="Drive direct link or assets/img/wa-XX.png" /></td>
+      <td><input class="docUrl" type="url" /></td>
+      <td><input class="trialUrl" type="url" /></td>
+      <td>
+        <button class="btn small save">Save</button>
+        <button class="btn small outline pricechange">Log Price Change</button>
+      </td>
+    </tr>
+  </template>
+
+  <template id="rowPayment">
+    <tr>
+      <td class="ts"></td><td class="inv"></td><td class="order"></td><td class="pfid"></td>
+      <td class="email"></td><td class="sku"></td><td class="total"></td><td class="released"></td>
+      <td>
+        <button class="btn small outline resend">Re-send Invoice</button>
+      </td>
+    </tr>
+  </template>
+
+  <script src="assets/js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+
+:root {
+  --bg0:#0b0f1f; --bg1:#121735; --panel:#13193a; --muted:#b7c2d5; --text:#e9eef7; --line:rgba(255,255,255,0.08);
+  --primary:#3aa3ff; --primary2:#75c6ff; --ok:#3ad07a; --warn:#ffb54a; --danger:#ff6b6b;
+}
+html,body{margin:0;padding:0;background:radial-gradient(1400px 700px at 10% 10%, var(--bg1) 0%, var(--bg0) 100%);color:var(--text);font-family:'Inter','Poppins',system-ui}
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;background:rgba(19,25,58,.65);backdrop-filter:saturate(120%) blur(8px);border-bottom:1px solid var(--line);box-shadow:0 4px 18px rgba(0,0,0,.25)}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700}.brand img{width:28px;height:28px;border-radius:6px}
+.user-area{display:flex;align-items:center;gap:10px}
+.container{display:grid;grid-template-columns:240px 1fr;gap:18px;max-width:1280px;margin:18px auto;padding:0 16px}
+.sidebar{background:rgba(19,25,58,.65);border:1px solid var(--line);border-radius:12px;padding:10px}
+.nav-btn{width:100%;text-align:left;padding:10px 12px;border:1px solid transparent;background:transparent;color:var(--text);border-radius:10px;margin:6px 0}
+.nav-btn.active,.nav-btn:hover{background:#1a2250;border-color:#2c3a80}
+.content{min-height:70vh}
+.toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.card{background:linear-gradient(180deg,#13193a,#0d1330);border:1px solid var(--line);border-radius:14px;padding:14px;box-shadow:0 8px 20px rgba(0,0,0,.35)}
+.grid{width:100%;border-collapse:collapse}
+.grid th,.grid td{border-bottom:1px solid var(--line);padding:10px;vertical-align:middle}
+.grid th{color:var(--muted);text-align:left}
+.btn{border:1px solid #2b3d86;background:#1a2354;color:var(--text);padding:9px 12px;border-radius:10px;cursor:pointer;transition:transform .18s ease, box-shadow .18s}
+.btn:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(0,0,0,.45)}
+.btn.primary{background:linear-gradient(90deg,var(--primary),var(--primary2));border:none;color:#051326;font-weight:600}
+.btn.outline{background:transparent}
+.btn.small{padding:6px 8px;font-size:.9rem}
+input[type="text"],input[type="url"],input[type="number"]{width:100%;background:#0e1433;border:1px solid #2b3d86;border-radius:8px;color:var(--text);padding:6px 8px}
+input[type="checkbox"]{transform:scale(1.1)}

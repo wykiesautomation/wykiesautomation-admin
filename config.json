@@ -1,0 +1,6 @@
+{
+  "adminApi": "https://script.google.com/macros/s/REPLACE_WITH_YOUR_SCRIPT_ID/exec",
+  "sheetId": "12qRMe6pAPVaQtosZBnhVtpMwyNks7W8uY9PX1mF620k",
+  "productsSheet": "Products",
+  "gallerySheet": "Gallery"
+}

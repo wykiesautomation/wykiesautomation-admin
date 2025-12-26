@@ -1,7 +1,0 @@
-
-{
-  "timeZone": "Africa/Johannesburg",
-  "dependencies": {},
-  "exceptionLogging": "STACKDRIVER",
-  "webapp": { "access": "ANYONE", "executeAs": "USER_ACCESSING" }
-}

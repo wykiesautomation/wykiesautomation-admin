@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang='en'>
+<head>
+<meta charset='utf-8'/>
+<meta name='viewport' content='width=device-width, initial-scale=1'/>
+<title>Admin — Wykies Automation</title>
+<link rel='stylesheet' href='assets/css/admin.css'/>
+</head>
+<body class='dark'>
+<header class='topbar'>
+<img src='assets/img/logo-blue.png' class='logo' alt='Wykies Automation'/>
+<div>Admin v1.0</div>
+<div id='user'></div>
+</header>
+<main id='app'>
+<section id='login'>
+<h2>Sign in</h2>
+<p>Only allowed: wykiesautomation@gmail.com</p>
+<button class='btn' onclick='adminLogin()'>Sign in with Google</button>
+</section>
+<section id='content' style='display:none'>
+<aside class='nav'>
+<button onclick="showTab('dashboard')">Dashboard</button>
+<button onclick="showTab('products')">Products</button>
+<button onclick="showTab('payments')">Payments</button>
+<button onclick="showTab('invoices')">Invoices</button>
+<button onclick="showTab('logs')">Logs</button>
+<button onclick="showTab('settings')">Settings</button>
+</aside>
+<section class='panel'>
+<div id='dashboard' class='tab'></div>
+<div id='products' class='tab' style='display:none'></div>
+<div id='payments' class='tab' style='display:none'></div>
+<div id='invoices' class='tab' style='display:none'></div>
+<div id='logs' class='tab' style='display:none'></div>
+<div id='settings' class='tab' style='display:none'></div>
+</section>
+</section>
+</main>
+<script>window.__CONFIG__={APPS_SCRIPT_BASE:'https://script.google.com/macros/s/DEPLOY_ID/exec'};</script>
+<script src='assets/js/admin.js'></script>
+</body>
+</html>

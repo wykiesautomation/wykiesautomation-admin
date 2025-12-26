@@ -1,1 +1,0 @@
-Admin runs on admin.wykiesautomation.co.za via GitHub Pages; API endpoints are Google Apps Script web app.

@@ -1,0 +1,13 @@
+{
+  "siteName": "Wykies Automation",
+  "primaryColor": "#0D47A1",
+  "accentColor": "#FF1744",
+  "backgroundColor": "#121212",
+  "borderColor": "#E0E0E0",
+  "textColor": "#FFFFFF",
+  "email": "wykiesautomation@gmail.com",
+  "whatsapp": "+27716816131",
+  "appsScriptDeploymentId": "AKfycbYQad-4V64QsRkFpPqoDWE8h-w4AzIQa2GKiITVoiqnYnCa6Xxv0hdqjkE4pTnoHj2Nw",
+  "appsScriptWebAppUrl": "https://script.google.com/macros/s/AKfycbYQad-4V64QsRkFpPqoDWE8h-w4AzIQa2GKiITVoiqnYnCa6Xxv0hdqjkE4pTnoHj2Nw/exec",
+  "csp": "default-src 'self'; img-src 'self' data:; script-src 'self'; style-src 'self' 'unsafe-inline'; frame-ancestors 'none'; upgrade-insecure-requests"
+}

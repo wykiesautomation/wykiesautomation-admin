@@ -146,3 +146,26 @@ body {
   display: flex;
   justify-content: space-between;
 
+  
+/* --- Force-remove any pseudo-elements printing hrefs on links --- */
+a::before,
+a::after,
+.nav a::before,
+.nav a::after {
+  content: "" !important;
+  display: none !important;
+}
+
+/* Optional: tighten nav link look & active state */
+.nav a {
+  color: #d7e7ff;
+  text-decoration: none;
+  margin-left: 14px;
+  display: inline-block;
+}
+.nav a.active {
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+

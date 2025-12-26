@@ -1,0 +1,14 @@
+{
+  "appScriptUrl": "https://script.google.com/macros/s/APP_SCRIPT_DEPLOY_ID/exec",
+  "sheetId": "12qRMe6pAPVaQtosZBnhVtpMwyNks7W8uY9PX1mF620k",
+  "env": "sandbox",
+  "contactEmail": "wykiesautomation@gmail.com",
+  "whatsappNumber": "+27716816131",
+  "adminAllowlistEmails": [
+    "wykiesautomation@gmail.com"
+  ],
+  "payfast": {
+    "process_live": "https://www.payfast.co.za/eng/process",
+    "process_sandbox": "https://sandbox.payfast.co.za/eng/process"
+  }
+}

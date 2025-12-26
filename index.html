@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin • Wykies Automation</title>
+  <link rel="stylesheet" href="assets/css/admin.css">
+</head>
+<body>
+  <header>
+    <img src="assets/img/logo-blue.png" alt="Logo" style="height:36px">
+    <strong>Admin Dashboard</strong>
+    <span id="user" style="margin-left:auto"></span>
+  </header>
+  <main>
+    <div class="alert">Payments (ITN) • Resend invoice • Price changes • Gallery manager</div>
+    <section>
+      <h2>Payments</h2>
+      <table class="table" id="paymentsTbl">
+        <thead><tr><th>Timestamp</th><th>Invoice</th><th>OrderID</th><th>pf_payment_id</th><th>Email</th><th>SKU</th><th>Total (VAT incl.)</th><th>Actions</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </section>
+  </main>
+  <script src="assets/js/admin.js"></script>
+</body>
+</html>

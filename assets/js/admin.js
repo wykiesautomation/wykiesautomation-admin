@@ -3,7 +3,7 @@
 const CFG = {
   environment: 'prod',
   sheetId: '12qRMe6pAPVaQtosZBnhVtpMwyNks7W8uY9PX1mF620k',
-  appsScriptUrl: '<YOUR_APPS_SCRIPT_WEBAPP_URL>',
+  appsScriptUrl: 'https://script.google.com/macros/s/AKfycbynudewxl8FUOILFPOva_fKpYtZDugzSQRNPASt0G1xix4HZ0jiAjZc3a45KaHpZG5g/exec',
   adminAllowedEmails: ['wykiesautomation@gmail.com'],
 };
 

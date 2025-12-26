@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wykies Automation — Admin</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="#login" class="active">Login</a>
+      <a href="#products">Products</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#dashboard">Dashboard</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Login section -->
+    <section id="login">
+      <h2>Login</h2>
+      <div class="form-row">
+        <label>Email</label>
+        <input id="admin-email" type="email" value="wykiesautomation@gmail.com" />
+      </div>
+      <div id="password-row" class="form-row">
+        <label>Password</label>
+        <input id="admin-pass" type="password" placeholder="Enter admin password" />
+      </div>
+      <div class="form-actions">
+        <button id="btn-login" class="primary">Sign in</button>
+        <span id="signed-badge" class="badge" style="display:none;">Signed in</span>
+      </div>
+      <div id="login-status" class="status"></div>
+    </section>
+
+    <!-- Products section -->
+    <section id="products" style="display:none;">
+      <h2>Products</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Add / Update product</h3>
+          <div class="form-row"><input id="p-id" placeholder="id (e.g., WA-01)"></div>
+          <div class="form-row"><input id="p-name" placeholder="name"></div>
+          <div class="form-row"><input id="p-price" type="number" placeholder="price"></div>
+          <div class="form-row"><input id="p-desc" placeholder="description"></div>
+          <div class="form-actions"><button id="btn-save-product" class="primary">Save Product</button></div>
+          <div id="save-product-status" class="status"></div>
+        </div>
+        <div class="card">
+          <h3>Current products</h3>
+          <ul id="products-list"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Gallery section -->
+    <section id="gallery" style="display:none;">
+      <h2>Gallery</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Add image</h3>
+          <div class="form-row"><input id="img-url" placeholder="https://..."></div>
+          <div class="form-row"><input id="img-alt" placeholder="alt text"></div>
+          <div class="form-actions"><button id="btn-add-image" class="primary">Add Image</button></div>
+          <div id="add-image-status" class="status"></div>
+        </div>
+        <div class="card">
+          <h3>Current images</h3>
+          <ul id="images-list"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dashboard section -->
+    <section id="dashboard" style="display:none;">
+      <h2>Dashboard</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Summary</h3>
+          <div class="metric">
+            <span>Total products</span>
+            <strong id="dash-products-count">0</strong>
+          </div>
+          <div class="metric">
+            <span>Total gallery images</span>
+            <strong id="dash-images-count">0</strong>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Session</h3>
+          <div class="metric">
+            <span>Logged in</span>
+            <strong id="dash-logged-in">No</strong>
+          </div>
+          <button id="btn-signout">Sign out</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <small>© Wykies Automation</small>
+  </footer>
+
+  <script src="admin.js"></script>
+</body>
+</html>

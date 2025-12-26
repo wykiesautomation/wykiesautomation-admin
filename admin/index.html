@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin — Wykies Automation</title>
+  <link rel="stylesheet" href="../assets/css/admin.css" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; script-src 'self'; style-src 'self' 'unsafe-inline'; frame-ancestors 'none'; upgrade-insecure-requests">
+</head>
+<body>
+  <header>
+    <img src="../assets/img/logo-blue.png" alt="Logo" class="logo"/>
+    <div>
+      <h1>Admin Dashboard</h1>
+      <small class="muted">Environment: <span id="env">prod</span> • Sheet: <code id="sheetId"></code></small>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button data-tab="products" class="active">Products</button>
+    <button data-tab="gallery">Gallery</button>
+    <button data-tab="payments">Payments</button>
+    <button data-tab="logs">Logs</button>
+    <span class="spacer"></span>
+    <button id="btnRefresh" class="ghost">Refresh</button>
+  </nav>
+
+  <main>
+    <section id="products" class="tab active">
+      <div class="toolbar">
+        <button id="btnAddProduct">+ Add Product</button>
+        <span class="hint">Inline edit cells, then click Save Row.</span>
+      </div>
+      <table class="table" id="tblProducts">
+        <thead>
+          <tr>
+            <th>SKU</th><th>Name</th><th>Price (incl)</th><th>Summary</th><th>Active</th><th>Image</th><th></th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <section id="gallery" class="tab">
+      <div class="toolbar">
+        <input type="text" id="caption" placeholder="Caption (max 120 chars)" maxlength="120"/>
+        <input type="file" id="file" accept="image/png,image/webp"/>
+        <button id="btnUpload">Upload</button>
+        <span class="hint">Drag cards to reorder (persists index).</span>
+      </div>
+      <div id="galleryGrid" class="grid"></div>
+    </section>
+
+    <section id="payments" class="tab">
+      <div class="toolbar">
+        <input id="searchPay" placeholder="Search invoice, email, SKU"/>
+      </div>
+      <table class="table" id="tblPayments">
+        <thead>
+          <tr>
+            <th>Timestamp</th><th>Invoice</th><th>OrderID</th><th>pf_payment_id</th><th>Email</th><th>SKU</th><th>Total</th><th>Released</th><th></th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <section id="logs" class="tab">
+      <div class="toolbar">
+        <select id="logType"><option value="price">PriceChanges</option><option value="action">AdminActions</option></select>
+        <button id="btnExport">Export .csv</button>
+      </div>
+      <pre id="logViewer" class="log"></pre>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" hidden></div>
+
+  <script src="../assets/js/admin.js"></script>
+</body>
+</html>

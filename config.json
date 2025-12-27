@@ -1,0 +1,11 @@
+{
+  "sheetId": "12qRMe6pAPVaQtosZBnhVtpMwyNks7W8uY9PX1mF620k",
+  "appsScriptUrl": "https://SCRIPT_WEB_APP_URL/exec",
+  "env": "production",
+  "whatsapp": "+27716816131",
+  "contactEmail": "wykiesautomation@gmail.com",
+  "notifyUrl": "https://itn.wykiesautomation.co.za/notify",
+  "returnUrl": "https://wykiesautomation.co.za/thank-you.html",
+  "cancelUrl": "https://wykiesautomation.co.za/",
+  "adminPassphrase": "CHANGE_ME"
+}

@@ -1,0 +1,5 @@
+@import url('../css/styles.css');
+.admin .tab h2{margin-top:0}
+#products-table{width:100%;border-collapse:collapse}
+#products-table th,#products-table td{border:1px solid #1e293b;padding:8px}
+.uploader{display:flex;gap:8px;align-items:center;margin-bottom:12px}

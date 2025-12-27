@@ -1,0 +1,1 @@
+/** Apps Script — ITN + Products API (stub) */

@@ -1,0 +1,48 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin — Wykies Automation</title>
+  <link href="/assets/css/styles.css" rel="stylesheet">
+</head>
+<body class="admin">
+  <header style="background:#0f1116; color:white; border-bottom:1px solid #2b2f3a;">
+    <div style="display:flex; align-items:center; gap:12px; padding:12px 16px;">
+      <img class="logo" src="/assets/img/logo-blue.png" alt="Logo" style="height:36px;">
+      <strong>Admin Dashboard</strong>
+    </div>
+  </header>
+  <div class="tabs">
+    <div class="tab active" data-id="Products" onclick="showTab('Products')">Products</div>
+    <div class="tab" data-id="Gallery" onclick="showTab('Gallery')">Gallery</div>
+    <div class="tab" data-id="Payments" onclick="showTab('Payments')">Payments</div>
+    <div class="tab" data-id="Logs" onclick="showTab('Logs')">Logs</div>
+  </div>
+  <div class="panel" data-id="Products" style="padding:16px;">
+    <table class="table">
+      <thead><tr><th>SKU</th><th>Name</th><th>Price (incl. VAT)</th></tr></thead>
+      <tbody>
+        <tr><td>WA-01</td><td>3D Printer Control V1</td><td>R1,499</td></tr>
+        <tr><td>WA-02</td><td>Plasma Cutter Control V1</td><td>R2,499</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="panel" data-id="Gallery" style="padding:16px; display:none;">
+    <p>Drag-and-drop PNG upload area (stub)</p>
+  </div>
+  <div class="panel" data-id="Payments" style="padding:16px; display:none;">
+    <table class="table">
+      <thead><tr><th>Timestamp</th><th>Invoice</th><th>Order</th><th>pf_payment_id</th><th>Email</th><th>SKU</th><th>Total</th><th>Action</th></tr></thead>
+      <tbody>
+        <tr><td>2025-12-24 10:00</td><td>INV-001234</td><td>ORD-abc123</td><td>1234567</td><td>buyer@example.com</td><td>WA-01</td><td>R1,499</td><td><button class="btn primary" onclick="resendInvoice(1)">Resend Invoice</button></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="panel" data-id="Logs" style="padding:16px; display:none;">
+    <p>Audit log list (stub)</p>
+  </div>
+  <script src="/assets/js/admin.js"></script>
+</body>
+</html>

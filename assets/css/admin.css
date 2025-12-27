@@ -1,0 +1,14 @@
+@import url('../css/styles.css');
+:root { --accent:#2F76FF; --slate:#111827; --slate2:#1f2937; --text:#e5e7eb; }
+body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto;}
+.admin .admin-header{padding:12px 20px;background:#0b1220;color:#e5e7eb;display:flex;justify-content:space-between;align-items:center}
+.tabs{display:flex;gap:8px;padding:10px 20px;background:#111827;position:sticky;top:56px}
+.tabs button{background:#1f2937;color:#cbd5e1;border:none;padding:8px 12px;border-radius:8px}
+.tabs .active{background:var(--accent);color:white}
+.tab{display:none;padding:20px}
+.tab.active{display:block}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.table{display:grid;gap:8px}
+.btn{background:var(--accent);color:white;padding:8px 12px;border-radius:8px;border:none}
+.btn-outline{border:1px solid var(--accent);color:var(--accent);background:transparent}
+.admin-footer{padding:20px;text-align:center;color:#94a3b8;background:#0b1220;border-top:1px solid #1e293b}

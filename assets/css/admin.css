@@ -1,0 +1,18 @@
+
+:root{--bg:#0b1220;--panel:#0f172a;--text:#e5e7eb;--muted:#94a3b8;--accent:#2F76FF}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Helvetica Neue,Arial,Noto Sans,sans-serif}
+.admin-header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#070d18;border-bottom:1px solid #1f2937}
+.admin-main{padding:16px}
+.login{max-width:420px;margin:48px auto;background:var(--panel);padding:16px;border:1px solid #1f2937;border-radius:12px}
+.hidden{display:none}
+.muted{color:var(--muted)}
+.tabs{display:flex;gap:8px;margin-bottom:12px}
+.tabs button{background:#0b1220;border:1px solid #1f2937;color:var(--text);padding:8px 12px;border-radius:8px}
+.primary{background:var(--accent);border:1px solid var(--accent);color:white;padding:8px 12px;border-radius:8px}
+.table{background:var(--panel);border:1px solid #1f2937;border-radius:12px;padding:8px;overflow:auto}
+.table div.row{display:grid;grid-template-columns:120px 1fr 120px 1fr 1fr 1fr 80px;gap:6px;padding:6px;border-bottom:1px solid #1f2937}
+.table div.row.header{font-weight:700;background:#0b1220}
+input,select,button{font:inherit}
+input,select{background:#0b1220;border:1px solid #1f2937;color:var(--text);padding:8px;border-radius:8px}
+button{cursor:pointer}

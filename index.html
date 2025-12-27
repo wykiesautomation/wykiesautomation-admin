@@ -1,0 +1,67 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin • Wykies Automation</title>
+  <link rel="stylesheet" href="assets/css/admin.css" />
+</head>
+<body>
+  <header class="admin-header">
+    <div class="brand">Admin — Wykies Automation</div>
+    <div id="userRole"></div>
+  </header>
+
+  <main class="admin-main">
+    <section class="login" id="loginPanel">
+      <h2>Sign in</h2>
+      <p>Use the admin passphrase to continue. Viewer role will allow read-only access.</p>
+      <input type="password" id="passphrase" placeholder="Passphrase" />
+      <select id="role">
+        <option value="viewer">Viewer</option>
+        <option value="admin">Admin</option>
+      </select>
+      <button id="loginBtn">Login</button>
+      <div id="loginMsg" class="muted"></div>
+    </section>
+
+    <section class="dashboard hidden" id="dashboard">
+      <nav class="tabs">
+        <button data-tab="products">Products</button>
+        <button data-tab="gallery">Gallery</button>
+        <button data-tab="payments">Payments</button>
+        <button data-tab="logs">Logs</button>
+      </nav>
+
+      <div class="tab" id="tab-products">
+        <h2>Products</h2>
+        <div id="productsGrid" class="table"></div>
+        <button id="saveProducts" class="primary">Save Changes</button>
+      </div>
+
+      <div class="tab hidden" id="tab-gallery">
+        <h2>Gallery</h2>
+        <p>Drag & drop upload (PNG/WebP ≤ 200KB). Caption (≤ 120 chars).</p>
+        <input type="file" id="galleryFile" accept="image/png,image/webp" />
+        <input type="text" id="galleryCaption" placeholder="Caption" maxlength="120" />
+        <button id="uploadGallery">Upload</button>
+        <div id="galleryTable" class="table"></div>
+      </div>
+
+      <div class="tab hidden" id="tab-payments">
+        <h2>Payments</h2>
+        <input type="search" id="paymentSearch" placeholder="Search payments" />
+        <div id="paymentsTable" class="table"></div>
+      </div>
+
+      <div class="tab hidden" id="tab-logs">
+        <h2>Price Change Log</h2>
+        <div id="priceLogTable" class="table"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="assets/js/admin.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; frame-ancestors 'none'; upgrade-insecure-requests">
+  <title>Admin · Wykies Automation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+</head>
+<body class="admin">
+  <header>
+    <h1 style="margin:0; font-size:20px;">Admin Dashboard</h1>
+    <div class="badge">Environment: <span id="envLabel">dev</span></div>
+  </header>
+  <nav class="tabs" role="tablist">
+    <div class="tab active" data-tab="dashboard" role="tab" aria-selected="true">Dashboard</div>
+    <div class="tab" data-tab="products" role="tab">Products</div>
+    <div class="tab" data-tab="gallery" role="tab">Gallery</div>
+    <div class="tab" data-tab="payments" role="tab">Payments</div>
+    <div class="tab" data-tab="logs" role="tab">Logs</div>
+  </nav>
+
+  <main class="container">
+    <section id="panel-dashboard">
+      <div class="kpis">
+        <div class="kpi"><div>Total Products</div><div id="kpiProducts" style="font-size:28px; font-weight:700;">—</div></div>
+        <div class="kpi"><div>Payments Today</div><div id="kpiPayments" style="font-size:28px; font-weight:700;">—</div></div>
+        <div class="kpi"><div>Last Price Change</div><div id="kpiPriceChange" style="font-size:16px;">—</div></div>
+      </div>
+    </section>
+
+    <section id="panel-products" hidden>
+      <h2>Products</h2>
+      <table class="table" id="tableProducts" aria-describedby="productsHelp">
+        <thead><tr><th>SKU</th><th>Name</th><th>Price (incl. VAT)</th><th>Active</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <p id="productsHelp">Edit in Google Sheet (protected). All changes are logged to PriceChanges.</p>
+    </section>
+
+    <section id="panel-gallery" hidden>
+      <h2>Gallery</h2>
+      <input type="file" id="filePng" accept="image/png" />
+      <div id="galleryGrid" class="gallery" style="margin-top:12px;"></div>
+    </section>
+
+    <section id="panel-payments" hidden>
+      <h2>Payments</h2>
+      <table class="table" id="tablePayments">
+        <thead><tr><th>Timestamp</th><th>InvoiceNo</th><th>pf_payment_id</th><th>Email</th><th>SKU</th><th>Total</th><th>Actions</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <section id="panel-logs" hidden>
+      <h2>Audit Logs</h2>
+      <pre id="logs" style="background:#0f172a; border:1px solid #243043; padding:12px; border-radius:10px; max-height:360px; overflow:auto;">Loading…</pre>
+    </section>
+  </main>
+
+  <script src="./assets/js/admin.js" defer></script>
+</body>
+</html>

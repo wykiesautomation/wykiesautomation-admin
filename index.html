@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; frame-ancestors 'none'; upgrade-insecure-requests"> 
+  <title>Admin · Wykies Automation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"> 
+  <link rel="stylesheet" href="/assets/css/styles.css" />
+</head>
+<body class="admin-shell">
+  <header class="admin-top">
+    <div class="container">
+      <strong>Admin</strong>
+      <nav class="tabbar" role="tablist">
+        <button class="tab" role="tab" aria-selected="true" data-panel="products">Products</button>
+        <button class="tab" role="tab" aria-selected="false" data-panel="gallery">Gallery</button>
+        <button class="tab" role="tab" aria-selected="false" data-panel="payments">Payments</button>
+        <button class="tab" role="tab" aria-selected="false" data-panel="logs">Logs</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="panel-products" class="panel" aria-hidden="false">
+      <h2>Products</h2>
+      <table class="table" id="productsTable"> 
+        <thead><tr><th>SKU</th><th>Name</th><th>Price (incl. VAT)</th><th>Image</th><th>Active</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <section id="panel-gallery" class="panel" aria-hidden="true">
+      <h2>Gallery</h2>
+      <p>Drag-and-drop upload coming soon. For now, edit Google Sheet CMS order and captions.</p>
+      <ul class="grid grid-gallery" id="adminGallery"></ul>
+    </section>
+
+    <section id="panel-payments" class="panel" aria-hidden="true">
+      <h2>Payments</h2>
+      <table class="table" id="paymentsTable">
+        <thead><tr><th>Timestamp</th><th>Invoice</th><th>OrderID</th><th>pf_payment_id</th><th>Email</th><th>SKU</th><th>Total</th><th>Action</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <section id="panel-logs" class="panel" aria-hidden="true">
+      <h2>Price Change Log</h2>
+      <table class="table" id="priceLogTable">
+        <thead><tr><th>Timestamp</th><th>SKU</th><th>Old</th><th>New</th><th>Changed By</th><th>Source IP</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </section>
+  </main>
+
+  <div class="toast" id="toast">Saved ✔</div>
+
+  <script src="/admin/assets/js/admin.js" defer></script>
+</body>
+</html>

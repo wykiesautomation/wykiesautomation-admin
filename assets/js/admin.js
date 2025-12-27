@@ -16,7 +16,10 @@
   if(btn){ btn.addEventListener('click',()=>{ const isLight=body.classList.contains('theme-light'); body.classList.toggle('theme-light', !isLight); body.classList.toggle('theme-dark', isLight); localStorage.setItem(THEME_KEY, isLight?'dark':'light'); }); }
   // Load shared data from PUBLIC site
   async function load(){
-    const prod= await fetch('https://wykiesautomation.co.za/products.json').then(r=>r.json());
+    
+const prod = await fetch('https://wykiesautomation.co.za/products.json').then(r => r.json());
+fetch('https://wykiesautomation.co.za/config.json').then(r => r.json()).then(load);
+
     renderProductsTable(prod);
     renderAdminGallery(prod);
     renderPaymentsLog([]);

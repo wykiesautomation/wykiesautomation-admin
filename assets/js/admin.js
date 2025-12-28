@@ -47,16 +47,45 @@
   }
 
   // Login overlay
-  async function signIn(){
-    const key = $('#adminKey').value.trim();
-    if(!key){ $('#loginStatus').textContent = 'Enter passphrase'; return; }
-    setAdminKey(key);
-    try{
-      const json = await apiGet({ action:'auth' });
-      if(json && json.ok){ $('#login').style.display='none'; initApp(); }
-      else{ throw new Error('Auth failed'); }
-    }catch(err){ $('#loginStatus').textContent = 'Invalid passphrase'; clearAdmin(); }
+ 
+async function signIn(){
+  const keyEl = document.querySelector('#adminKey');
+  const statusEl = document.querySelector('#loginStatus');
+  const key = (keyEl?.value || '').trim();
+
+  // Read config
+  let cfg = {};
+  try { cfg = JSON.parse(localStorage.getItem('wa_admin_cfg') || '{}'); } catch(e){}
+
+  // Basic checks
+  if (!cfg.apiBase) {
+    statusEl.textContent = 'API base missing — open Settings and paste your Apps Script Web App URL';
+    return;
   }
+  if (!key) {
+    statusEl.textContent = 'Enter passphrase';
+    return;
+  }
+
+  // Try auth
+  localStorage.setItem('wa_admin_key', key);
+  try {
+    const url = new URL(cfg.apiBase);
+    url.search = new URLSearchParams({ action: 'auth', key }).toString();
+    const res = await fetch(url.toString(), { cache: 'no-store' });
+    const json = await res.json();
+    if (json && json.ok) {
+      document.getElementById('login').style.display = 'none';
+      initApp();
+    } else {
+      throw new Error('Auth failed');
+    }
+  } catch (err) {
+    statusEl.textContent = 'Invalid passphrase or API URL';
+    localStorage.removeItem('wa_admin_key');
+  }
+}
+
 
   function bindLogin(){ $('#btnLogin').addEventListener('click', signIn); $('#adminKey').addEventListener('keydown', e=>{ if(e.key==='Enter') signIn(); }); }
 

@@ -1,0 +1,137 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Wykies Admin</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/admin.css" />
+</head>
+<body>
+  <div id="login" class="login">
+    <div class="card">
+      <h1>Admin Sign In</h1>
+      <p class="muted">Enter passphrase to continue</p>
+      <input id="adminKey" type="password" placeholder="Admin passphrase" />
+      <button id="btnLogin" class="btn btn-primary">Sign In</button>
+      <div id="loginStatus" class="muted" style="margin-top:8px"></div>
+    </div>
+  </div>
+
+  <header class="site-header">
+    <div class="container nav">
+      <div class="brand">Wykies Admin</div>
+      <nav>
+        <button id="waThemeBtn" class="btn btn-outline">Theme: system</button>
+        <button id="btnLogout" class="btn btn-secondary">Sign Out</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="content">
+    <aside class="sidebar">
+      <button class="tablink active" data-tab="dash">Dashboard</button>
+      <button class="tablink" data-tab="products">Products</button>
+      <button class="tablink" data-tab="gallery">Gallery</button>
+      <button class="tablink" data-tab="payments">Payments</button>
+      <button class="tablink" data-tab="logs">Logs</button>
+      <button class="tablink" data-tab="cms">CMS Links</button>
+      <button class="tablink" data-tab="settings">Settings</button>
+    </aside>
+    <section class="panel">
+      <div id="tab-dash" class="tab active">
+        <h2>Dashboard</h2>
+        <div class="grid stats">
+          <div class="stat"><div class="kpi" id="kpiProducts">–</div><div class="label">Products</div></div>
+          <div class="stat"><div class="kpi" id="kpiPaymentsToday">–</div><div class="label">Payments Today</div></div>
+          <div class="stat"><div class="kpi" id="kpiGallery">–</div><div class="label">Gallery Items</div></div>
+        </div>
+      </div>
+
+      <div id="tab-products" class="tab">
+        <h2>Products</h2>
+        <div class="table-wrap"><table class="table" id="tblProducts"><thead><tr>
+          <th>SKU</th><th>Name</th><th>Price</th><th>Active</th><th>Image</th>
+        </tr></thead><tbody></tbody></table></div>
+      </div>
+
+      <div id="tab-gallery" class="tab">
+        <h2>Gallery</h2>
+        <div class="toolbar">
+          <button id="btnSyncGallery" class="btn btn-primary">Sync Gallery from Drive</button>
+        </div>
+        <div class="table-wrap"><table class="table" id="tblGallery"><thead><tr>
+          <th>Thumb</th><th>Caption</th><th>SKU</th>
+        </tr></thead><tbody></tbody></table></div>
+      </div>
+
+      <div id="tab-payments" class="tab">
+        <h2>Payments</h2>
+        <div class="table-wrap"><table class="table" id="tblPayments"><thead><tr>
+          <th>Date</th><th>Invoice</th><th>OrderID</th><th>Email</th><th>SKU</th><th>Total</th><th>Actions</th>
+        </tr></thead><tbody></tbody></table></div>
+      </div>
+
+      <div id="tab-logs" class="tab">
+        <h2>Logs</h2>
+        <div class="table-wrap"><table class="table" id="tblLogs"><thead><tr>
+          <th>Timestamp</th><th>SKU</th><th>Old</th><th>New</th><th>By</th><th>IP</th>
+        </tr></thead><tbody></tbody></table></div>
+      </div>
+
+      <div id="tab-cms" class="tab">
+        <h2>CMS Links</h2>
+        <div class="grid links">
+          <div class="card">
+            <h3>Google Sheet</h3>
+            <p><a id="lnkSheet" href="#" target="_blank">Open CMS Spreadsheet</a></p>
+          </div>
+          <div class="card">
+            <h3>Drive Folders</h3>
+            <p><a id="lnkProdFolder" href="#" target="_blank">ProductImages</a></p>
+            <p><a id="lnkGalFolder" href="#" target="_blank">GalleryImages</a></p>
+            <p><a id="lnkThumbsFolder" href="#" target="_blank">GalleryThumbs</a></p>
+          </div>
+          <div class="card">
+            <h3>Sync</h3>
+            <p>Click to update image URLs in Sheets from Drive.</p>
+            <button id="btnSyncProducts" class="btn btn-primary">Sync Product Images</button>
+            <button id="btnSyncGallery2" class="btn btn-secondary">Sync Gallery</button>
+            <div id="syncStatus" class="muted" style="margin-top:8px"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="tab-settings" class="tab">
+        <h2>Settings</h2>
+        <div class="form">
+          <label>Apps Script API Base URL
+            <input id="apiBase" placeholder="https://script.google.com/macros/s/AKfycbx.../exec">
+          </label>
+          <label>Sheet ID
+            <input id="sheetId" placeholder="12qRMe6pAPV...">
+          </label>
+          <label>Drive Folder: ProductImages (Folder ID)
+            <input id="prodFolderId" placeholder="Drive folder ID">
+          </label>
+          <label>Drive Folder: GalleryImages (Folder ID)
+            <input id="galFolderId" placeholder="Drive folder ID">
+          </label>
+          <label>Drive Folder: GalleryThumbs (Folder ID)
+            <input id="thumbsFolderId" placeholder="Drive folder ID">
+          </label>
+          <div class="toolbar">
+            <button id="btnSaveSettings" class="btn btn-primary">Save Settings</button>
+            <button id="btnPushFolders" class="btn btn-outline">Push Folder IDs to API</button>
+          </div>
+          <div id="saveStatus" class="muted" style="margin-top:8px"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="assets/js/admin.js"></script>
+</body>
+</html>

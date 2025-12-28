@@ -3,22 +3,18 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Admin — Wykies Automation</title>
+  <title>Wykies Automation — Admin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Fonts (system-ui fallback is fine as specified in your theme) -->
-  https://accounts.google.com
-
-  <!-- Brand-dark admin CSS -->
-  assets/css/admin.css
-
-  <!-- Google Identity for Sign-In -->
+  <!-- CSS (use one of these based on where your file is) -->
+  <!-- If admin.css is inside assets/css/: -->
+  <link rel="/admin.css
+  <!-- If admin.css is in the same folder as this HTML, use: -->
+  <!-- <link rel="stylesheet" href="./admin.css(for allowlisted sign-in) -->
   https://accounts.google.com/gsi/client</script>
 
-  <!-- App config & Payments API (keep your existing logic/files) -->
-  config.js</script>
-  assets/js/paymentsApi.js</script>
-</head>
+  <!-- Config + Payments UI logic -->
+  <script src="/config  <script src="/assets/js/paymentsApi</head>
 <body>
   <!-- Topbar -->
   <header class="topbar" role="banner">
@@ -27,30 +23,23 @@
       <nav class="top-actions" aria-label="Global actions">
         <button class="btn outline" id="btn-view-docs">View Docs</button>
         <button class="btn outline" id="btn-download-trial">Download Trial</button>
-        <a class="btn primary" id="btn-whatsapp" href="https://wa.me/277168161er>
-
-  <main class="page" role="main">
+        <a class="btn primary" id="btn-whatsapp" href="https://wa.me/27716816131" target="_blank" rel="noopenerain">
     <!-- Auth Gate -->
     <section class="auth-gate" id="auth-gate" aria-labelledby="auth-title">
       <div class="auth-inner">
         <h2 id="auth-title">Admin Sign‑In</h2>
         <p class="muted">Only the allowlisted Google account can access the Admin panel.</p>
-        <!-- Google Sign-In button container (rendered by gsi/client) -->
         <div id="g_id_onload"
              data-client_id="YOUR_GOOGLE_CLIENT_ID"
              data-context="signin"
-             data-auto_prompt="false">
-        </div>
+             data-auto_prompt="false"></div>
         <div class="g_id_signin"
              data-type="standard"
              data-shape="rectangular"
              data-theme="filled_blue"
              data-text="signin_with"
              data-size="large"
-             data-logo_alignment="left">
-        </div>
-
-        <!-- Signed-in status -->
+             data-logo_alignment="left"></div>
         <div class="auth-status" id="auth-status" hidden>
           <span class="badge success">Signed in</span>
           <button class="btn danger" id="btn-signout">Sign out</button>
@@ -58,27 +47,30 @@
       </div>
     </section>
 
-    <!-- Tabs -->
-    <section class="tab-panel" aria-label="Admin Dashboard">
+    <!-- Payments Panel -->
+    <section class="tab-panel" aria-label="Payments">
       <div class="panel-header">
         <h2>Payments</h2>
         <div class="controls">
-          <label for="sort-select" class="sr-only">Sort by</label>
-          <select id="sort-select" aria-label="Sort payments">
-            <option value="desc">Newest first</option>
-            <option value="asc">Oldest first</option>
+          <label for="paySort" class="sr-only">Sort by</label>
+          <select id="paySort" aria-label="Sort payments">
+            <option value="timestamp_desc">Newest first</option>
+            <option value="timestamp_asc">Oldest first</option>
           </select>
 
-          <button class="btn outline" id="btn-export-csv">Export CSV</button>
-          <button class="btn outline" id="btn-export-xlsx">Export XLSX</button>
+          <button class="btn outline" id="btnExportCsv">Export CSV</button>
+          <button class="btn outline" id="btnExportXlsx">Export XLSX</button>
 
-          <!-- Search/filter -->
-          <label for="search-input" class="sr-only">Search</label>
-          <input id="search-input" type="search" placeholder="Search email, invoice, SKU…" />
+          <!-- Optional date filters -->
+          <input type="date" id="dateFrom" aria-label="From date" />
+          <input type="date" id="dateTo" aria-label="To date" />
+
+          <!-- Search -->
+          <label for="paySearch" class="sr-only">Search</label>
+          <input id="paySearch" type="search" placeholder="Search email, invoice, SKU…" />
         </div>
       </div>
 
-      <!-- Data table -->
       <div class="table-wrap">
         <table class="data-table" aria-describedby="payments-caption">
           <caption id="payments-caption" class="sr-only">List of PayFast payments</caption>
@@ -96,35 +88,14 @@
               <th scope="col">Actions</th>
             </tr>
           </thead>
-          <tbody id="payments-tbody">
-            <!-- rows injected by assets/js/paymentsApi.js -->
-            <!-- Example static row (remove in production) -->
-            <tr>
-              <td data-label="Timestamp">2025-12-27 14:32</td>
-              <td data-label="Invoice">INV-00123</td>
-              <td data-label="Order ID">ORD-55678</td>
-              <td data-label="pf_payment_id">1234567890</td>
-              <td data-label="Email">customer@example.com</td>
-              <td data-label="SKU">WA-03</td>
-              <td data-label="Total (incl.)">R 6,499.00</td>
-              <td data-label="Released"><span class="badge warning">Pending</span></td>
-              <td data-label="PDF"><button class="btn small" aria-label="Open PDF invoice">Open</button></td>
-              <td data-label="Actions">
-                <div class="row-actions">
-                  resend-invoiceResend Invoice</button>
-                  refundRefund</button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
+          <tbody id="payRows"><!-- populated by paymentsApi.js --></tbody>
         </table>
       </div>
 
-      <!-- Pager -->
       <div class="pager" role="navigation" aria-label="Table pagination">
-        <button class="btn outline" id="btn-prev" disabled aria-label="Previous page">◀ Prev</button>
-        <span id="page-indicator">Page <strong>1</strong></span>
-        <button class="btn outline" id="btn-next" aria-label="Next page">Next ▶</button>
+        <button class="btn outline" id="prevPage" disabled aria-label="Previous page">◀ Prev</button>
+        <span id="pageInfo">Page 1</span>
+        <button class="btn outline" id="nextPage" aria-label="Next page">Next ▶</button>
       </div>
     </section>
   </main>
@@ -134,36 +105,5 @@
     <span id="toast-text">Ready.</span>
     <button class="btn small link" id="toast-close" aria-label="Dismiss">✕</button>
   </div>
-
-  <!-- Minimal inline script to wire UI states; keep your main logic inside paymentsApi.js -->
-  <script>
-    // Sort change event hook
-    document.getElementById('sort-select')?.addEventListener('change', (e) => {
-      // paymentsApi.sort(e.target.value);
-      showToast(`Sort: ${e.target.value === 'desc' ? 'Newest first' : 'Oldest first'}`);
-    });
-
-    // Export buttons
-    document.getElementById('btn-export-csv')?.addEventListener('click', () => {
-      // paymentsApi.export('csv');
-      showToast('Exporting CSV…');
-    });
-    document.getElementById('btn-export-xlsx')?.addEventListener('click', () => {
-      // paymentsApi.export('xlsx');
-      showToast('Exporting XLSX…');
-    });
-
-    // Pager
-    document.getElementById('btn-prev')?.addEventListener('click', () => showToast('Loading previous page…'));
-    document.getElementById('btn-next')?.addEventListener('click', () => showToast('Loading next page…'));
-
-    // Toast helpers
-    const toast = document.getElementById('toast');
-    const toastText = document.getElementById('toast-text');
-    const toastClose = document.getElementById('toast-close');
-    function showToast(msg) {
-      toastText.textContent = msg;
-      toast.classList.remove('hidden');
-      setTimeout(() => toast.classList.add('hidden'), 3000);
-    }
-    toastClose?.addEventListener('click', () => toast.classList.add('hidden'));
+</body>
+</html>

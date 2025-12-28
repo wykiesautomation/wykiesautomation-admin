@@ -1,50 +1,79 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>Admin • Wykies Automation</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="/assets/css/main.css" rel="stylesheet">
+  <meta charset="utf-8" />
+  <title>Wykies Automation — Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/assets/css/admin.css?v=20251228" />
   <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="/config.js" defer></script>
+  <script src="/assets/js/paymentsApi.js" defer></script>
 </head>
 <body>
-  <header>
-    <nav class="nav"><a class="logo" href="/">Wykies Automation</a><span class="badge">Admin</span></nav>
-  </header>
-  <main class="section">
-    <h1>Admin Dashboard</h1>
-    <div id="signin">
-      <div id="g_id_onload"
-           data-client_id="291364861368-6rhp0eba7d51eq8e4qm35cq3cfv4fdhs.apps.googleusercontent.com"
-           data-context="signin"
-           data-callback="onSignIn"
-           data-auto_select="false"
-           data-itp_support="true">
-      </div>
-      <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline" data-text="signin_with" data-shape="rect" data-logo_alignment="left"></div>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <h1 class="brand">Wykies Automation — Admin</h1>
+      <nav class="top-actions">
+        <button class="btn outline" id="btn-view-docs">View Docs</button>
+        <button class="btn outline" id="btn-download-trial">Download Trial</button>
+        <a class="btn primary" id="btn-whatsapp" href="https://wa.me/27716816131" target="_blank" rel="noopener">WhatsApp</a>
+      </nav>
     </div>
+  </header>
 
-    <section id="adminContent" style="display:none;">
-      <div class="grid">
-        <article class="card"><div class="body"><h3>Products</h3>
-          <p>Manage names, prices, stock, images</p>
-          <button class="btn" onclick="loadProductsAdmin()">Open</button>
-        </div></article>
-        <article class="card"><div class="body"><h3>Payments</h3>
-          <p>View PayFast payments and resend invoices</p>
-          <button class="btn" onclick="loadPayments()">Open</button>
-        </div></article>
-        <article class="card"><div class="body"><h3>Gallery</h3>
-          <p>Update gallery items</p>
-          <button class="btn" onclick="loadGalleryAdmin()">Open</button>
-        </div></article>
+  <main class="page">
+    <section class="auth-gate" id="auth-gate">
+      <div class="auth-inner">
+        <h2>Admin Sign‑In</h2>
+        <p class="muted">Only the allowlisted Google account can access the Admin panel.</p>
+        <div id="g_id_onload" data-client_id="YOUR_GOOGLE_CLIENT_ID" data-context="signin" data-auto_prompt="false"></div>
+        <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="filled_blue" data-text="signin_with" data-size="large" data-logo_alignment="left"></div>
+        <div class="auth-status" id="auth-status" hidden>
+          <span class="badge success">Signed in</span>
+          <button class="btn danger" id="btn-signout">Sign out</button>
+        </div>
       </div>
+    </section>
 
-      <div id="adminPanel" class="section"></div>
+    <section class="tab-panel" aria-label="Payments">
+      <div class="panel-header">
+        <h2>Payments</h2>
+        <div class="controls">
+          <label for="paySort" class="sr-only">Sort by</label>
+          <select id="paySort">
+            <option value="timestamp_desc">Newest first</option>
+            <option value="timestamp_asc">Oldest first</option>
+          </select>
+          <button class="btn outline" id="btnExportCsv">Export CSV</button>
+          <button class="btn outline" id="btnExportXlsx">Export XLSX</button>
+          <input type="date" id="dateFrom" aria-label="From date" />
+          <input type="date" id="dateTo" aria-label="To date" />
+          <label for="paySearch" class="sr-only">Search</label>
+          <input id="paySearch" type="search" placeholder="Search email, invoice, SKU…" />
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Timestamp</th><th>Invoice</th><th>Order ID</th><th>pf_payment_id</th>
+              <th>Email</th><th>SKU</th><th>Total (incl.)</th><th>Released</th><th>PDF</th><th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="payRows"></tbody>
+        </table>
+      </div>
+      <div class="pager">
+        <button class="btn outline" id="prevPage" disabled>◀ Prev</button>
+        <span id="pageInfo">Page 1</span>
+        <button class="btn outline" id="nextPage">Next ▶</button>
+      </div>
     </section>
   </main>
 
-  <footer class="site-footer"><p>© 2025 Wykies Automation</p></footer>
-  <script src="/admin/app.js" defer></script>
+  <div class="toast hidden" id="toast" aria-live="polite">
+    <span id="toast-text">Ready.</span>
+    <button class="btn small link" id="toast-close" aria-label="Dismiss">✕</button>
+  </div>
 </body>
 </html>

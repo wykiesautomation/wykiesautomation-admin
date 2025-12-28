@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin — Wykies Automation</title>
+  <link rel="stylesheet" href="assets/css/admin.css" />
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="logo" href="/">
+      <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="assets/img/logo-blue-dark.png">
+        <img src="assets/img/logo-blue.png" alt="Admin" style="height:32px">
+      </picture>
+    </a>
+    <span class="badge">Payments &amp; Products</span>
+  </header>
+
+  <!-- Sign‑In visible by default; hidden after success -->
+  <section id="signin" class="container" style="display:block;max-width:560px;padding-top:24px">
+    <h2>Admin Sign‑In</h2>
+    <p>Use Google (allowlist: <code>wykiesautomation@gmail.com</code>)</p>
+    <div id="g_id_onload"
+         data-client_id="YOUR_GOOGLE_CLIENT_ID"
+         data-auto_prompt="false"
+         data-callback="onGoogleCredential"></div>
+    <div class="g_id_signin"
+         data-type="standard" data-size="large" data-theme="outline"
+         data-text="sign_in_with" data-shape="rectangular" data-logo_alignment="left"></div>
+  </section>
+
+  <!-- Main app (hidden until signed in) -->
+  <main id="app" class="container" style="display:none">
+    <nav class="nav-tabs">
+      <a href="#products" class="active" onclick="openTab(event,'products')">Products</a>
+      <a href="#gallery"  onclick="openTab(event,'gallery')">Gallery</a>
+      <a href="#payments" onclick="openTab(event,'payments')">Payments</a>
+    </nav>
+
+    <section id="products" class="tab">
+      <h2>Products</h2>
+      <div id="prod-list"></div>
+    </section>
+
+    <section id="gallery" class="tab" style="display:none">
+      <h2>Gallery</h2>
+      <button class="btn" onclick="Admin.addGalleryItem()">Add Image</button>
+      <div id="gal-list"></div>
+    </section>
+
+    <section id="payments" class="tab" style="display:none">
+      <h2>Payments</h2>
+      <div id="pay-list"></div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" style="display:none"></div>
+
+  <script>
+    function openTab(e,id){
+      document.querySelectorAll('.nav-tabs a').forEach(a=>a.classList.remove('active'));
+      e.target.classList.add('active');
+      document.querySelectorAll('.tab').forEach(t=>t.style.display='none');
+      document.getElementById(id).style.display='block';
+    }
+  </script>
+  <script src="assets/js/admin.js"></script>
+  <script>
+    async function onGoogleCredential(resp){
+      try{ await Admin.onGoogleCredential(resp); }catch(e){ alert('Sign‑in failed'); }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin — Wykies Automation</title>
+
+  <!-- Styles -->
+  assets/css/admin.css
+
+  <!-- Google Identity (optional: for gating later) -->
+  https://accounts.google.com/gsi/client</script>
+
+  <!-- Admin config (set PAYMENTS_API_URL in config.js) -->
+  config.js</script>
+</head>
+<body>
+  <header class="topbar">
+    <h1>Admin Dashboard</h1>
+  </header>
+
+  <!-- Sign-In Gate (you can hide/remove until you enable Google Sign-In) -->
+  <div id="authGate" class="auth-gate" style="display:none;">
+    <h3>Admin Sign‑In</h3>
+    <div id="g_id_signin"></div>
+    <p id="authStatus"></p>
+  </div>
+
+  <main>
+    <!-- Payments Tab -->
+    <section id="tab-payments" class="tab-panel">
+      <header class="panel-header">
+        <h2>Payments</h2>
+        <div class="controls">
+          <input id="paySearch" type="search" placeholder="Search Invoice, OrderID, Email, SKU…" />
+          <input id="dateFrom" type="date" />
+          <input id="dateTo" type="date" />
+          <select id="paySort">
+            <option value="timestamp_desc">Newest first</option>
+            <option value="timestamp_asc">Oldest first</option>
+          </select>
+          <button id="btnExportCsv">Export CSV</button>
+          <button id="btnExportXlsx">Export XLSX</button>
+        </div>
+      </header>
+
+      <div id="payTableWrap" class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Invoice</th>
+              <th>Order ID</th>
+              <th>pf_payment_id</th>
+              <th>Email</th>
+              <th>SKU</th>
+              <th>Total (incl.)</th>
+              <th>Released</th>
+              <th>PDF</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="payRows"></tbody>
+        </table>
+      </div>
+
+      <footer class="pager">
+        <button id="prevPage">◀ Prev</button>
+        <span id="pageInfo">Page 1</span>
+        <button id="nextPage">Next ▶</button>
+      </footer>
+
+      <div id="toast" class="toast hidden"></div>
+    </section>
+  </main>
+
+  <!-- Scripts -->
+  assets/js/paymentsApi.js</script>
+</body>
+</html>

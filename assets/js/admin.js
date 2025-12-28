@@ -1,7 +1,7 @@
 
 window.Admin = window.Admin || {};
 Admin.CONFIG = { appsScriptUrl: 'https://script.google.com/macros/s/PASTE_YOUR_APPS_SCRIPT_ID/exec' };
-Admin.GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID';
+Admin.GOOGLE_CLIENT_ID = 'wykiesautomation@gmail.com';
 
 window.addEventListener('DOMContentLoaded', () => {
   const ok = sessionStorage.getItem('adm')==='ok';

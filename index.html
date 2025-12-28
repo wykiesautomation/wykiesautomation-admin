@@ -3,79 +3,167 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Admin — Wykies Automation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Styles -->
+  <!-- Fonts (system-ui fallback is fine as specified in your theme) -->
+  https://accounts.google.com
+
+  <!-- Brand-dark admin CSS -->
   assets/css/admin.css
 
-  <!-- Google Identity (optional: for gating later) -->
+  <!-- Google Identity for Sign-In -->
   https://accounts.google.com/gsi/client</script>
 
-  <!-- Admin config (set PAYMENTS_API_URL in config.js) -->
+  <!-- App config & Payments API (keep your existing logic/files) -->
   config.js</script>
+  assets/js/paymentsApi.js</script>
 </head>
 <body>
-  <header class="topbar">
-    <h1>Admin Dashboard</h1>
-  </header>
+  <!-- Topbar -->
+  <header class="topbar" role="banner">
+    <div class="topbar-inner">
+      <h1 class="brand">Wykies Automation — Admin</h1>
+      <nav class="top-actions" aria-label="Global actions">
+        <button class="btn outline" id="btn-view-docs">View Docs</button>
+        <button class="btn outline" id="btn-download-trial">Download Trial</button>
+        <a class="btn primary" id="btn-whatsapp" href="https://wa.me/277168161er>
 
-  <!-- Sign-In Gate (you can hide/remove until you enable Google Sign-In) -->
-  <div id="authGate" class="auth-gate" style="display:none;">
-    <h3>Admin Sign‑In</h3>
-    <div id="g_id_signin"></div>
-    <p id="authStatus"></p>
-  </div>
+  <main class="page" role="main">
+    <!-- Auth Gate -->
+    <section class="auth-gate" id="auth-gate" aria-labelledby="auth-title">
+      <div class="auth-inner">
+        <h2 id="auth-title">Admin Sign‑In</h2>
+        <p class="muted">Only the allowlisted Google account can access the Admin panel.</p>
+        <!-- Google Sign-In button container (rendered by gsi/client) -->
+        <div id="g_id_onload"
+             data-client_id="YOUR_GOOGLE_CLIENT_ID"
+             data-context="signin"
+             data-auto_prompt="false">
+        </div>
+        <div class="g_id_signin"
+             data-type="standard"
+             data-shape="rectangular"
+             data-theme="filled_blue"
+             data-text="signin_with"
+             data-size="large"
+             data-logo_alignment="left">
+        </div>
 
-  <main>
-    <!-- Payments Tab -->
-    <section id="tab-payments" class="tab-panel">
-      <header class="panel-header">
+        <!-- Signed-in status -->
+        <div class="auth-status" id="auth-status" hidden>
+          <span class="badge success">Signed in</span>
+          <button class="btn danger" id="btn-signout">Sign out</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tabs -->
+    <section class="tab-panel" aria-label="Admin Dashboard">
+      <div class="panel-header">
         <h2>Payments</h2>
         <div class="controls">
-          <input id="paySearch" type="search" placeholder="Search Invoice, OrderID, Email, SKU…" />
-          <input id="dateFrom" type="date" />
-          <input id="dateTo" type="date" />
-          <select id="paySort">
-            <option value="timestamp_desc">Newest first</option>
-            <option value="timestamp_asc">Oldest first</option>
+          <label for="sort-select" class="sr-only">Sort by</label>
+          <select id="sort-select" aria-label="Sort payments">
+            <option value="desc">Newest first</option>
+            <option value="asc">Oldest first</option>
           </select>
-          <button id="btnExportCsv">Export CSV</button>
-          <button id="btnExportXlsx">Export XLSX</button>
-        </div>
-      </header>
 
-      <div id="payTableWrap" class="table-wrap">
-        <table class="data-table">
+          <button class="btn outline" id="btn-export-csv">Export CSV</button>
+          <button class="btn outline" id="btn-export-xlsx">Export XLSX</button>
+
+          <!-- Search/filter -->
+          <label for="search-input" class="sr-only">Search</label>
+          <input id="search-input" type="search" placeholder="Search email, invoice, SKU…" />
+        </div>
+      </div>
+
+      <!-- Data table -->
+      <div class="table-wrap">
+        <table class="data-table" aria-describedby="payments-caption">
+          <caption id="payments-caption" class="sr-only">List of PayFast payments</caption>
           <thead>
             <tr>
-              <th>Timestamp</th>
-              <th>Invoice</th>
-              <th>Order ID</th>
-              <th>pf_payment_id</th>
-              <th>Email</th>
-              <th>SKU</th>
-              <th>Total (incl.)</th>
-              <th>Released</th>
-              <th>PDF</th>
-              <th>Actions</th>
+              <th scope="col">Timestamp</th>
+              <th scope="col">Invoice</th>
+              <th scope="col">Order ID</th>
+              <th scope="col">pf_payment_id</th>
+              <th scope="col">Email</th>
+              <th scope="col">SKU</th>
+              <th scope="col">Total (incl.)</th>
+              <th scope="col">Released</th>
+              <th scope="col">PDF</th>
+              <th scope="col">Actions</th>
             </tr>
           </thead>
-          <tbody id="payRows"></tbody>
+          <tbody id="payments-tbody">
+            <!-- rows injected by assets/js/paymentsApi.js -->
+            <!-- Example static row (remove in production) -->
+            <tr>
+              <td data-label="Timestamp">2025-12-27 14:32</td>
+              <td data-label="Invoice">INV-00123</td>
+              <td data-label="Order ID">ORD-55678</td>
+              <td data-label="pf_payment_id">1234567890</td>
+              <td data-label="Email">customer@example.com</td>
+              <td data-label="SKU">WA-03</td>
+              <td data-label="Total (incl.)">R 6,499.00</td>
+              <td data-label="Released"><span class="badge warning">Pending</span></td>
+              <td data-label="PDF"><button class="btn small" aria-label="Open PDF invoice">Open</button></td>
+              <td data-label="Actions">
+                <div class="row-actions">
+                  resend-invoiceResend Invoice</button>
+                  refundRefund</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
         </table>
       </div>
 
-      <footer class="pager">
-        <button id="prevPage">◀ Prev</button>
-        <span id="pageInfo">Page 1</span>
-        <button id="nextPage">Next ▶</button>
-      </footer>
-
-      <div id="toast" class="toast hidden"></div>
+      <!-- Pager -->
+      <div class="pager" role="navigation" aria-label="Table pagination">
+        <button class="btn outline" id="btn-prev" disabled aria-label="Previous page">◀ Prev</button>
+        <span id="page-indicator">Page <strong>1</strong></span>
+        <button class="btn outline" id="btn-next" aria-label="Next page">Next ▶</button>
+      </div>
     </section>
   </main>
 
-  <!-- Scripts -->
-  assets/js/paymentsApi.js</script>
-</body>
-</html>
+  <!-- Toast -->
+  <div class="toast hidden" id="toast" role="status" aria-live="polite">
+    <span id="toast-text">Ready.</span>
+    <button class="btn small link" id="toast-close" aria-label="Dismiss">✕</button>
+  </div>
+
+  <!-- Minimal inline script to wire UI states; keep your main logic inside paymentsApi.js -->
+  <script>
+    // Sort change event hook
+    document.getElementById('sort-select')?.addEventListener('change', (e) => {
+      // paymentsApi.sort(e.target.value);
+      showToast(`Sort: ${e.target.value === 'desc' ? 'Newest first' : 'Oldest first'}`);
+    });
+
+    // Export buttons
+    document.getElementById('btn-export-csv')?.addEventListener('click', () => {
+      // paymentsApi.export('csv');
+      showToast('Exporting CSV…');
+    });
+    document.getElementById('btn-export-xlsx')?.addEventListener('click', () => {
+      // paymentsApi.export('xlsx');
+      showToast('Exporting XLSX…');
+    });
+
+    // Pager
+    document.getElementById('btn-prev')?.addEventListener('click', () => showToast('Loading previous page…'));
+    document.getElementById('btn-next')?.addEventListener('click', () => showToast('Loading next page…'));
+
+    // Toast helpers
+    const toast = document.getElementById('toast');
+    const toastText = document.getElementById('toast-text');
+    const toastClose = document.getElementById('toast-close');
+    function showToast(msg) {
+      toastText.textContent = msg;
+      toast.classList.remove('hidden');
+      setTimeout(() => toast.classList.add('hidden'), 3000);
+    }
+    toastClose?.addEventListener('click', () => toast.classList.add('hidden'));

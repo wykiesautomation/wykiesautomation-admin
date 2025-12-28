@@ -1,6 +1,6 @@
 // Admin Dashboard JS — Google Sign-In + Apps Script backend
 const ALLOWLIST = ["wykiesautomation@gmail.com"]; // only email allowed
-const BACKEND_URL = "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec";
+const BACKEND_URL = "https://script.google.com/macros/s/AKfycbwHuhjZ7YP7XMfJVrPlaBimM8dOweFtb6dCOe8QUOZlYAllepuSuJU7F52kzd20eMJZgQ/exec";
 let idToken = null;
 
 function onSignIn(resp){

@@ -1,0 +1,21 @@
+name = "wykiesautomation-worker"
+main = "services/worker-itn/index.js"
+compatibility_date = "2024-06-01"
+
+routes = [
+  { pattern = "wykiesautomation.co.za/payfast/*", zone_name = "wykiesautomation.co.za" },
+  { pattern = "wykiesautomation.co.za/cms/*", zone_name = "wykiesautomation.co.za" },
+  { pattern = "wykiesautomation.co.za/admin/*", zone_name = "wykiesautomation.co.za" }
+]
+
+[vars]
+PUBLIC_HOST = "wykiesautomation.co.za"
+ADMIN_HOST = "admin.wykiesautomation.co.za"
+ADMIN_EMAIL = "wykiesautomation@gmail.com"
+APPSCRIPT_BASE = "<PASTE_APPS_SCRIPT_WEBAPP_URL>"
+
+# Add with: wrangler secret put PAYFAST_MERCHANT_ID
+#           wrangler secret put PAYFAST_PASSPHRASE
+#           wrangler secret put MAILCHANNELS_FROM
+#           wrangler secret put MAILCHANNELS_REPLYTO
+#           wrangler secret put MAILCHANNELS_TO_ADMIN

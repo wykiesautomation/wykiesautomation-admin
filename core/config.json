@@ -1,0 +1,34 @@
+{
+  "branding": {
+    "accent": "#2F76FF",
+    "font": "Inter"
+  },
+  "contact": {
+    "email": "wykiesautomation@gmail.com",
+    "whatsapp": "+27 71 681 6131"
+  },
+  "hosts": {
+    "public": "wykiesautomation.co.za",
+    "admin": "admin.wykiesautomation.co.za"
+  },
+  "cms": {
+    "sheetId": "12qRMe6pAPVaQtosZBnhVtpMwyNks7W8uY9PX1mF620k",
+    "ttlMinutes": 10
+  },
+  "allowlist": {
+    "adminEmail": "wykiesautomation@gmail.com"
+  },
+  "pricingVatIncl": {
+    "WA-01": 1499,
+    "WA-02": 2499,
+    "WA-03": 6499,
+    "WA-04": 899,
+    "WA-05": 800,
+    "WA-06": 3999,
+    "WA-07": 1800,
+    "WA-08": 999,
+    "WA-09": 1009,
+    "WA-10": 1299,
+    "WA-11": 5499
+  }
+}

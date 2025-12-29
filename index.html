@@ -1,0 +1,30 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin – Wykies Automation</title>
+  <link href="../public/style.css" rel="stylesheet" />
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+  <main class="products" style="max-width:1100px;">
+    <h2>Admin Dashboard</h2>
+    <div id="signin"></div>
+    <section class="card" id="dash" style="display:none;">
+      <nav style="margin-bottom:12px;">
+        <button class="btn" onclick="showTab('products')">Products</button>
+        <button class="btn" onclick="showTab('payments')">Payments</button>
+        <button class="btn" onclick="showTab('promos')">Promos</button>
+        <button class="btn" onclick="showTab('settings')">Settings</button>
+      </nav>
+      <div id="tab-products" class="tab"></div>
+      <div id="tab-payments" class="tab" style="display:none;"></div>
+      <div id="tab-promos" class="tab" style="display:none;"></div>
+      <div id="tab-settings" class="tab" style="display:none;"></div>
+    </section>
+  </main>
+  <script src="./admin.js"></script>
+</body>
+</html>

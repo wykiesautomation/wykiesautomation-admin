@@ -1,0 +1,17 @@
+
+/* Wykies Automation Admin Styles */
+:root { --brand-blue: #2F76FF; --bg:#0b1020; --panel:#141a2f; --text:#e5e7eb; --muted:#94a3b8; }
+* { box-sizing: border-box; }
+body { margin:0; font-family: Inter, system-ui, Segoe UI, Arial; background: var(--bg); color: var(--text); }
+header { padding: 20px; background: var(--panel); display:flex; align-items:center; gap:12px; }
+header img { height:36px; }
+.nav { display:flex; gap:8px; padding: 8px 20px; background: var(--panel); position: sticky; top:0; }
+.btn { background: var(--brand-blue); color:#fff; border:none; padding:8px 12px; border-radius:8px; cursor:pointer; }
+.tab { display:none; padding: 20px; }
+.tab.active { display:block; }
+.card { background: var(--panel); border-radius:12px; padding:16px; margin-bottom:16px; }
+input, select { background:#0d1324; color:#e5e7eb; border:1px solid #223; border-radius:8px; padding:8px; }
+.table { width:100%; border-collapse: collapse; }
+.table th, .table td { padding:8px; border-bottom:1px solid #223; text-align:left; }
+.badge { background:#1f2937; color:#fff; padding:4px 8px; border-radius:6px; }
+.toast { position:fixed; bottom:20px; right:20px; background:var(--panel); border:1px solid #223; padding:12px; border-radius:8px; display:none; }

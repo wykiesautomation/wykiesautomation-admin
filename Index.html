@@ -1,0 +1,47 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wykies Automation — Admin Payments</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body class="signed-out">
+  <div class="container">
+    <header>
+      <h1>Admin — Payments</h1>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div id="authStatus">Not signed in</div>
+        <button id="signOutBtn" class="btn btn-danger" style="display:none;" onclick="signOut()">Sign out</button>
+      </div>
+    </header>
+
+    <div class="card" id="signinCard">
+      <h2>Sign in</h2>
+      <p>Use your Google account (allowlist: <strong>wykiesautomation@gmail.com</strong>).</p>
+      <div id="g_id_onload"
+           data-client_id="291364861368-s24qqsvj6bik88452a0tabkp1d41qtv9.apps.googleusercontent.com"
+           data-auto_prompt="false"
+           data-callback="handleCredential"></div>
+      <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline" data-text="sign_in_with" data-shape="rectangular" data-logo_alignment="left"></div>
+    </div>
+
+    <div class="card" id="adminCard">
+      <p id="signedOutHint">Sign in to view payments and resend invoices.</p>
+      <div class="toolbar">
+        <input id="itnUrl" placeholder="Apps Script Web App URL" style="min-width:360px;" />
+        <button class="btn btn-primary" onclick="loadPayments()"><span class="spinner" id="loadSpinner"></span> Load</button>
+      </div>
+      <div class="table-wrap">
+        <table id="grid"><thead><tr>
+          <th>Date</th><th>Invoice</th><th>OrderID</th><th>pf_payment_id</th><th>Email</th><th>SKU</th><th>Total (R)</th><th>Actions</th>
+        </tr></thead><tbody></tbody></table>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+  <script src="assets/js/admin.js"></script>
+</body>
+</html>

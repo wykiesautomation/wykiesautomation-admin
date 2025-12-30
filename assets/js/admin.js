@@ -1,5 +1,5 @@
 
-const CONFIG_URL = '../config.json';
+const CONFIG_URL = 'config.json';
 let CONFIG = null; let ADMIN_TOKEN = '';
 async function loadConfig(){ const r=await fetch(CONFIG_URL); CONFIG = await r.json(); }
 function auth(){ ADMIN_TOKEN = localStorage.getItem('ADMIN_TOKEN') || ''; if(!ADMIN_TOKEN){ const t = prompt((CONFIG.admin&&CONFIG.admin.prompt_text)||'Enter Passphrase'); if(t){ ADMIN_TOKEN=t; localStorage.setItem('ADMIN_TOKEN', t); } } }

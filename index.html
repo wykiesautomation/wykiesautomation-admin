@@ -1,47 +1,253 @@
 
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Wykies Automation — Admin Payments</title>
-  <link rel="stylesheet" href="assets/css/styles.css">
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Wykies Automation — Admin</title>
+
+  <!-- Inter font -->
+  https://fonts.googleapis.com
+  https://fonts.gstatic.com
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel in the repo root -->
+  styles.css
 </head>
-<body class="signed-out">
-  <div class="container">
-    <header>
-      <h1>Admin — Payments</h1>
-      <div style="display:flex;align-items:center;gap:10px;">
-        <div id="authStatus">Not signed in</div>
-        <button id="signOutBtn" class="btn btn-danger" style="display:none;" onclick="signOut()">Sign out</button>
+<body>
+  <div class="app">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-dot"></span>
+        <span class="brand-name">Wykies Automation</span>
       </div>
-    </header>
 
-    <div class="card" id="signinCard">
-      <h2>Sign in</h2>
-      <p>Use your Google account (allowlist: <strong>wykiesautomation@gmail.com</strong>).</p>
-      <div id="g_id_onload"
-           data-client_id="291364861368-s24qqsvj6bik88452a0tabkp1d41qtv9.apps.googleusercontent.com"
-           data-auto_prompt="false"
-           data-callback="handleCredential"></div>
-      <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline" data-text="sign_in_with" data-shape="rectangular" data-logo_alignment="left"></div>
-    </div>
+      <nav class="nav">
+        #overviewOverview</a>
+        <a hreftsProducts</a>
+        #galleryGallery</a>
+        #paymentsPayments</a>
+        <a href="#logs" class="av>
 
-    <div class="card" id="adminCard">
-      <p id="signedOutHint">Sign in to view payments and resend invoices.</p>
-      <div class="toolbar">
-        <input id="itnUrl" placeholder="Apps Script Web App URL" style="min-width:360px;" />
-        <button class="btn btn-primary" onclick="loadPayments()"><span class="spinner" id="loadSpinner"></span> Load</button>
+      <div class="sidebar-footer">
+        <small>Connected to Google Sheets CMS · Apps Script <span id="connStatus">OK</span></small>
       </div>
-      <div class="table-wrap">
-        <table id="grid"><thead><tr>
-          <th>Date</th><th>Invoice</th><th>OrderID</th><th>pf_payment_id</th><th>Email</th><th>SKU</th><th>Total (R)</th><th>Actions</th>
-        </tr></thead><tbody></tbody></table>
-      </div>
-    </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+      <header class="topbar">
+        <h1>Admin</h1>
+        <div class="topbar-actions">
+          <span class="role" id="roleLabel">Role: Admin</span>
+          <button class="btn btn-ghost" id="signOutBtn">Sign Out</button>
+        </div>
+      </header>
+
+      <!-- ===== Overview (default view) ===== -->
+      <section id="overview" class="view active">
+        <div class="kpi-grid">
+          <div class="card kpi">
+            <div class="kpi-value" id="kpiProducts">0</div>
+            <div class="kpi-label">Products</div>
+          </div>
+          <div class="card kpi">
+            <div class="kpi-value" id="kpiPaymentsToday">0</div>
+            <div class="kpi-label">Payments (today)</div>
+          </div>
+          <div class="card kpi">
+            <div class="kpi-value" id="kpiGallery">0</div>
+            <div class="kpi-label">Gallery Images</div>
+          </div>
+          <div class="card kpi">
+            <div class="kpi-value" id="kpiErrors">0</div>
+            <div class="kpi-label">Errors</div>
+          </div>
+        </div>
+
+        <!-- Products block -->
+        <div class="panel">
+          <div class="panel-header">
+            <h2>Products</h2>
+            <div class="panel-tools">
+              <input id="productSearch" class="input" placeholder="Search by name, SKU" />
+              <button class="btn" id="addProductBtn">Add Product</button>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table class="table" id="productsTable">
+              <thead>
+                <tr>
+                  <th>SKU</th>
+                  <th>Name</th>
+                  <th>Price (incl.)</th>
+                  <th>Image</th>
+                  <th>Active</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <!-- Gallery block -->
+          <div class="panel">
+            <div class="panel-header">
+              <h2>Gallery</h2>
+              <small>Drag and drop images to reorder</small>
+            </div>
+            <div class="gallery" id="galleryGrid"></div>
+            <div class="panel-footer">
+              <input type="file" id="galleryUpload" multiple accept="image/*" />
+              <button class="btn" id="uploadImagesBtn">Upload</button>
+            </div>
+          </div>
+
+          <!-- Payments block -->
+          <div class="panel">
+            <div class="panel-header"><h2>Payments</h2></div>
+            <div class="table-wrap">
+              <table class="table" id="paymentsTable">
+                <thead>
+                  <tr>
+                    <th>Timestamp</th>
+                    <th>InvoiceNo</th>
+                    <th>Amount</th>
+                    <th>Email</th>
+                    <th>SKU</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Price Change Log -->
+        <div class="panel">
+          <div class="panel-header"><h2>Price Change Log</h2></div>
+          <div class="table-wrap">
+            <table class="table" id="priceLogTable">
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>SKU</th>
+                  <th>Old Price</th>
+                  <th>New Price</th>
+                  <th>Changed By</th>
+                  <th>Source IP</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Dedicated Products view ===== -->
+      <section id="products" class="view">
+        <div class="panel">
+          <div class="panel-header">
+            <h2>Products</h2>
+            <div class="panel-tools">
+              <input id="productSearch2" class="input" placeholder="Search by name, SKU" />
+              <button class="btn" id="addProductBtn2">Add Product</button>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table class="table" id="productsTable2">
+              <thead>
+                <tr>
+                  <th>SKU</th>
+                  <th>Name</th>
+                  <th>Price (incl.)</th>
+                  <th>Image</th>
+                  <th>Active</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Gallery view ===== -->
+      <section id="gallery" class="view">
+        <div class="panel">
+          <div class="panel-header"><h2>Gallery</h2></div>
+          <div class="gallery" id="galleryGrid2"></div>
+        </div>
+      </section>
+
+      <!-- ===== Payments view ===== -->
+      <section id="payments" class="view">
+        <div class="panel">
+          <div class="panel-header"><h2>Payments</h2></div>
+          <div class="table-wrap">
+            <table class="table" id="paymentsTable2">
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>InvoiceNo</th>
+                  <th>Amount</th>
+                  <th>Email</th>
+                  <th>SKU</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Logs view ===== -->
+      <section id="logs" class="view">
+        <div class="panel">
+          <div class="panel-header"><h2>System & Price Change Logs</h2></div>
+          <div class="table-wrap">
+            <table class="table" id="logsTable">
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>Type</th>
+                  <th>Message</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
   </div>
 
-  <div id="toast" class="toast"></div>
-  <script src="assets/js/admin.js"></script>
+  <!-- Add/Edit Product Modal -->
+  <dialog id="productModal">
+    <form method="dialog" class="modal">
+      <h3 id="modalTitle">Add Product</h3>
+      <div class="form-grid">
+        <label>SKU<input id="skuInput" required /></label>
+        <label>Name<input id="nameInput" required /></label>
+        <label>Price (incl.)<input id="priceInput" type="number" step="0.01" required /></label>
+        <label>Image filename<input id="imageInput" placeholder="wa-01.png" /></label>
+        <label class="checkbox"><input id="activeInput" type="checkbox" checked /> Active</label>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" value="cancel">Cancel</button>
+        <button class="btn" id="saveProductBtn" value="confirm">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Config (use config.js in production). Keep config.example.js until ready. -->
+  <script srcple.js</script>
+  <!-- Your JS in the repo root -->
+  app.js</script>
 </body>
 </html>

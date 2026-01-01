@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Wykies Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --brand-blue:#2F76FF; /* per spec */
+      --bg:#0b0f1a; --panel:#121829; --text:#e6eaf2; --muted:#9aa3b2; --accent:#00D4FF; --ok:#2ecc71; --warn:#f39c12; --bad:#e74c3c;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;color:var(--text);background:linear-gradient(180deg,#0b1222, #0b0f1a);}
+    header{display:flex;align-items:center;gap:16px;padding:14px 20px;background:var(--panel);border-bottom:1px solid #1c2337;position:sticky;top:0;z-index:1000}
+    .logo{width:36px;height:36px;border-radius:8px;background:var(--brand-blue);display:grid;place-items:center;color:#fff;font-weight:700}
+    nav a{color:var(--text);text-decoration:none;margin:0 8px;padding:8px 12px;border-radius:8px}
+    nav a.active, nav a:hover{background:#1c2337}
+    .grow{flex:1}
+    .signin{display:flex;align-items:center;gap:8px}
+    main{padding:24px;max-width:1200px;margin:0 auto}
+    h2{margin:18px 0 8px}
+    .cards{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+    .card{grid-column:span 4;background:var(--panel);padding:16px;border-radius:14px;border:1px solid #1c2337}
+    .table{margin-top:12px;width:100%;border-collapse:collapse}
+    .table th,.table td{border-bottom:1px solid #1c2337;padding:10px;text-align:left}
+    .btn{background:var(--brand-blue);color:#fff;border:none;border-radius:10px;padding:10px 14px;cursor:pointer}
+    .btn.secondary{background:#1c2337;color:var(--text)}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    textarea, input, select{width:100%;background:#0d1426;color:var(--text);border:1px solid #1c2337;border-radius:10px;padding:10px}
+    .status.ok{color:var(--ok)}.status.warn{color:var(--warn)}.status.bad{color:var(--bad)}
+    footer{padding:24px;color:var(--muted);text-align:center}
+    .hidden{display:none}
+    /* toast */
+    #toast{position:fixed;top:18px;right:18px;z-index:2000;background:#121829;border:1px solid #1c2337;color:#e6eaf2;padding:10px 14px;border-radius:10px;box-shadow:0 6px 20px rgba(0,0,0,.35);display:none}
+    #toast.ok{border-color:#2ecc71} #toast.bad{border-color:#e74c3c}
+  </style>
+  <script>
+    // --- CONFIG ---
+    const CONFIG = {
+      allowlist: ['wykiesautomation@gmail.com'],
+      oauthClientId: '291364861368-s24qqsvj6bik88452a0tabkp1d41qtv9.apps.googleusercontent.com',
+      appsScriptAPI: 'https://script.google.com/macros/s/AKfycbwHuhjZ7YP7XMfJVrPlaBimM8dOweFtb6dCOe8QUOZlYAllepuSuJU7F52kzd20eMJZgQ/exec'
+    };
+
+    // --- Auth ---
+    let currentUser = null;
+    function onGoogleSignIn(response){
+      const payload = parseJwt(response.credential);
+      if(!payload || !payload.email){ alert('Sign-in failed'); return; }
+      if(!CONFIG.allowlist.includes(payload.email)){
+        document.getElementById('authMsg').textContent = 'Access denied. Not on allowlist.';
+        signOut();
+        return;
+      }
+      currentUser = {email: payload.email, name: payload.name || payload.email};
+      document.getElementById('userEmail').textContent = currentUser.email;
+      document.getElementById('signedOut').classList.add('hidden');
+      document.getElementById('signedIn').classList.remove('hidden');
+      initDashboard();
+    }
+    function parseJwt (token) {
+      try { const base64Url = token.split('.')[1]; const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+      } catch(e){ return null; }
+    }
+    function signOut(){
+      currentUser = null;
+      document.getElementById('userEmail').textContent = '';
+      document.getElementById('signedOut').classList.remove('hidden');
+      document.getElementById('signedIn').classList.add('hidden');
+    }
+
+    // --- Toast ---
+    function showToast(msg, isBad){
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.className = isBad? 'bad' : 'ok'; t.style.display='block';
+      setTimeout(()=>{t.style.display='none';}, 2500);
+    }
+
+    // --- Data Fetch Helpers ---
+    async function apiGet(path){
+      const url = CONFIG.appsScriptAPI + path;
+      const res = await fetch(url, {headers: {'Accept':'application/json'}});
+      if(!res.ok) throw new Error('API ' + path + ' failed');
+      return await res.json();
+    }
+    async function apiPost(path, data){
+      const url = CONFIG.appsScriptAPI + path;
+      const res = await fetch(url, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data)});
+      if(!res.ok){ const t = await res.text(); throw new Error('API ' + path + ' failed: ' + t); }
+      return await res.json();
+    }
+
+    // --- UI Init ---
+    async function initDashboard(){
+      try{
+        const summary = await apiGet('?action=summary');
+        document.getElementById('salesToday').textContent = 'R ' + (summary.salesToday||0);
+        document.getElementById('itn24').textContent = summary.itnVerified24h||0;
+        document.getElementById('queueHealth').textContent = summary.queue||'OK';
+      }catch(err){ console.warn(err); }
+    }
+
+    async function loadCatalog(){
+      const tbody = document.querySelector('#catalog tbody');
+      tbody.innerHTML = '<tr><td colspan="6">Loading…</td></tr>';
+      try{
+        const items = await apiGet('?action=catalog');
+        tbody.innerHTML = '';
+        (items||[]).forEach(p=>{
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td>${p.id||''}</td><td>${p.name||''}</td><td>R ${p.price||''}</td><td>${(p.images||[]).length}</td><td>${p.status||'Active'}</td><td><button class="btn secondary" onclick="editProduct('${p.id}')">Edit</button></td>`;
+          tbody.appendChild(tr);
+        });
+      }catch(err){ tbody.innerHTML = '<tr><td colspan="6">Failed to load catalog</td></tr>'; }
+    }
+    function editProduct(id){ alert('Edit product ' + id + ' (stub)'); }
+
+    async function loadPayments(){
+      const tbody = document.querySelector('#payments tbody');
+      tbody.innerHTML = '<tr><td colspan="6">Loading…</td></tr>';
+      try{
+        const list = await apiGet('?action=payments');
+        tbody.innerHTML='';
+        (list||[]).forEach(pay=>{
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td>${pay.date||''}</td><td>${pay.order||''}</td><td>${pay.email||''}</td><td>R ${pay.total||''}</td><td>${pay.status||''}</td><td><button class="btn secondary" onclick="resendInvoice('${pay.order}')">Resend Invoice</button></td>`;
+          tbody.appendChild(tr);
+        });
+      }catch(err){ tbody.innerHTML = '<tr><td colspan="6">Failed to load payments</td></tr>'; }
+    }
+    async function resendInvoice(order){
+      try{ const r = await apiPost('?action=resendInvoice', {order, email: (currentUser&&currentUser.email)||''}); showToast(r.message||'Invoice resent'); }catch(e){ showToast('Failed: '+e.message, true); }
+    }
+
+    // --- Pages ---
+    async function loadPages(){
+      try{
+        const pages = await apiGet('?action=pages');
+        const sidebar = document.getElementById('pagesSidebar');
+        if(!sidebar) return;
+        sidebar.innerHTML = '';
+        (pages||[]).forEach(p=>{
+          const btn = document.createElement('button');
+          btn.className = 'btn secondary';
+          btn.style.marginRight = '8px';
+          btn.textContent = p.title || p.slug;
+          btn.onclick = ()=>{
+            document.getElementById('pageSlug').value = p.slug || '';
+            document.getElementById('pageTitle').value = p.title || '';
+            document.getElementById('pageContent').value = p.content || '';
+          };
+          sidebar.appendChild(btn);
+        });
+      }catch(e){ console.warn('Load pages failed', e); }
+    }
+
+    async function savePage(){
+      if(!currentUser || !currentUser.email){ showToast('Sign in required', true); return; }
+      const slug = document.getElementById('pageSlug').value.trim();
+      const title = document.getElementById('pageTitle').value.trim();
+      const content = document.getElementById('pageContent').value;
+      if(!slug){ showToast('Slug is required', true); return; }
+      try{
+        const r = await apiPost('?action=savePage', {slug, title, content, email: currentUser.email});
+        showToast(r.message||'Saved');
+        await loadPages();
+      }catch(e){ showToast('Save failed: '+e.message, true); }
+    }
+
+    function showTab(id){
+      document.querySelectorAll('section').forEach(s=>s.classList.add('hidden'));
+      document.getElementById(id).classList.remove('hidden');
+      if(id==='catalog') loadCatalog();
+      if(id==='payments') loadPayments();
+      if(id==='pages') loadPages();
+    }
+  </script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+  <header>
+    <div class="logo">WA</div>
+    <nav>
+      <a href="#" onclick="showTab('dashboard');this.classList.add('active');">Dashboard</a>
+      <a href="#" onclick="showTab('catalog');this.classList.add('active');">Catalog</a>
+      <a href="#" onclick="showTab('prices');this.classList.add('active');">Price Log</a>
+      <a href="#" onclick="showTab('payments');this.classList.add('active');">Payments</a>
+      <a href="#" onclick="showTab('pages');this.classList.add('active');">Pages</a>
+      <a href="#" onclick="showTab('settings');this.classList.add('active');">Settings</a>
+      <a href="#" onclick="showTab('audit');this.classList.add('active');">Audit</a>
+    </nav>
+    <div class="grow"></div>
+    <div class="signin">
+      <span id="userEmail"></span>
+      <div id="signedOut">
+        <div id="g_id_onload"
+             data-client_id="291364861368-s24qqsvj6bik88452a0tabkp1d41qtv9.apps.googleusercontent.com"
+             data-context="signin"
+             data-callback="onGoogleSignIn"
+             data-auto_prompt="false"></div>
+        <div class="g_id_signin" data-type="standard" data-size="medium" data-theme="filled_blue" data-text="signin_with" data-shape="rectangle" data-logo_alignment="left"></div>
+        <span id="authMsg" style="margin-left:8px;color:#e74c3c"></span>
+      </div>
+      <div id="signedIn" class="hidden">
+        <button class="btn secondary" onclick="signOut()">Sign out</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="dashboard">
+      <h2>Dashboard</h2>
+      <div class="cards">
+        <div class="card"><div>Today’s Sales</div><h3 id="salesToday">R 0</h3></div>
+        <div class="card"><div>Verified ITNs (24h)</div><h3 id="itn24">0</h3></div>
+        <div class="card"><div>Queue Health</div><h3 id="queueHealth" class="status ok">OK</h3></div>
+      </div>
+    </section>
+
+    <section id="catalog" class="hidden">
+      <h2>Catalog</h2>
+      <button class="btn">Add Product</button>
+      <table class="table">
+        <thead>
+          <tr><th>ID</th><th>Name</th><th>Price (incl VAT)</th><th>Images</th><th>Status</th><th></th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <section id="prices" class="hidden">
+      <h2>Price Log</h2>
+      <p>Append-only: product_id, old, new, who, when, note</p>
+    </section>
+
+    <section id="payments" class="hidden">
+      <h2>Payments</h2>
+      <table class="table">
+        <thead>
+          <tr><th>Date</th><th>Order</th><th>Email</th><th>Total</th><th>Status</th><th></th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <section id="pages" class="hidden">
+      <h2>Pages (Markdown)</h2>
+      <div class="grid">
+        <div>
+          <div style="margin-bottom:8px">Existing pages: <span id="pagesSidebar"></span></div>
+          <label>Slug<input id="pageSlug" placeholder="privacy"></label>
+          <label>Title<input id="pageTitle" placeholder="Privacy (POPIA)"></label>
+          <label>Content (Markdown)
+            <textarea id="pageContent" rows="10">## Privacy (POPIA)\nWe collect contact and order details to process sales via PayFast…</textarea>
+          </label>
+          <div style="display:flex;gap:8px">
+            <button class="btn" onclick="savePage()">Save</button>
+            <button class="btn secondary" onclick="alert('Preview (stub)')">Preview</button>
+          </div>
+        </div>
+        <div>
+          <h3>Privacy (POPIA)</h3>
+          <p>We collect contact and order details to process sales via PayFast…</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="settings" class="hidden">
+      <h2>Settings</h2>
+      <div class="grid">
+        <div>
+          <label>Company Name<input placeholder="Wykies Automation"></label>
+          <label>VAT Number<input placeholder=""></label>
+          <label>Registered Address<input placeholder=""></label>
+          <label>Support Email<input placeholder="wykiesautomation@gmail.com"></label>
+        </div>
+        <div>
+          <label>Logo<input type="file" accept="image/*"></label>
+          <label>Brand Color<input type="color" value="#2F76FF"></label>
+          <button class="btn">Save Settings</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="audit" class="hidden">
+      <h2>Audit Log</h2>
+      <p>Entries are written append-only by the server.</p>
+    </section>
+  </main>
+
+  <footer>© Wykies Automation</footer>
+  <div id="toast"></div>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"> 
+  <title>Wykies Automation — Admin</title>
+  <meta name="description" content="Admin Dashboard for products, gallery, payments, and logs."/>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"> 
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"> 
+  <link rel="stylesheet" href="./styles.css"/>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" fill="#2F76FF"/><path d="M6 13l3 3 9-9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Wykies Admin</span>
+    </div>
+    <div class="spacer"></div>
+    <div id="roleBadge" class="badge">Viewer</div>
+    <button id="signOutBtn" class="ghost">Sign out</button>
+  </header>
+  <div class="layout">
+    <nav class="sidenav">
+      <button class="nav-btn active" data-tab="overview">Overview</button>
+      <button class="nav-btn" data-tab="products">Products</button>
+      <button class="nav-btn" data-tab="gallery">Gallery</button>
+      <button class="nav-btn" data-tab="payments">Payments</button>
+      <button class="nav-btn" data-tab="logs">Logs</button>
+      <div class="status" id="statusBar">Connecting CMS…</div>
+    </nav>
+    <main class="content">
+      <section id="overview" class="tab active">
+        <h1>Operational Overview</h1>
+        <div class="cards">
+          <div class="card"><div class="label">Products</div><div id="statProducts" class="value">–</div></div>
+          <div class="card"><div class="label">Payments (today)</div><div id="statPayments" class="value">–</div></div>
+          <div class="card"><div class="label">Gallery Images</div><div id="statGallery" class="value">–</div></div>
+          <div class="card"><div class="label">Errors</div><div id="statErrors" class="value error">0</div></div>
+        </div>
+        <div class="build">Build: <span id="buildId"></span></div>
+      </section>
+      <section id="products" class="tab">
+        <h1>Products</h1>
+        <div class="actions">
+          <button id="btnAddProduct" class="primary">Add Product</button>
+          <input id="filterProducts" placeholder="Filter…"/>
+        </div>
+        <table class="grid" id="gridProducts"> 
+          <thead><tr><th>ID</th><th>Title</th><th>Price (incl. VAT)</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </section>
+      <section id="gallery" class="tab">
+        <h1>Gallery</h1>
+        <div class="uploader" id="dropZone">Drag & drop images (≤200KB)</div>
+        <div class="gallery" id="galleryGrid"></div>
+      </section>
+      <section id="payments" class="tab">
+        <h1>Payments</h1>
+        <table class="grid" id="gridPayments"> 
+          <thead><tr><th>Date</th><th>Order</th><th>Email</th><th>Amount</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </section>
+      <section id="logs" class="tab">
+        <h1>Logs</h1>
+        <div class="tabs-inline">
+          <button class="subtab active" data-log="price">Price Changes</button>
+          <button class="subtab" data-log="system">System</button>
+          <button class="subtab" data-log="itn">ITN</button>
+        </div>
+        <pre class="logview" id="logView">Loading…</pre>
+      </section>
+    </main>
+  </div>
+
+  <script src="./config.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

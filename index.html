@@ -1,0 +1,84 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Wykies Automation — Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/admin.css" />
+</head>
+<body>
+  <div class="topbar">
+    <div class="logo">WA Admin</div>
+    <div>
+      <button id="signin" class="btn">Sign in</button>
+      <span class="role" id="role">Viewer</span>
+    </div>
+  </div>
+  <div class="sidebar">
+    <button data-tab="overview" class="tab-btn active">Overview</button>
+    <button data-tab="products" class="tab-btn">Products</button>
+    <button data-tab="gallery" class="tab-btn">Gallery</button>
+    <button data-tab="payments" class="tab-btn">Payments</button>
+    <button data-tab="pricechanges" class="tab-btn">Price Log</button>
+    <button data-tab="logs" class="tab-btn">Logs</button>
+  </div>
+  <main class="content">
+    <section id="overview" class="tab active">
+      <h2>Operational Overview</h2>
+      <div class="cards">
+        <div class="card"><h3>Products</h3><div id="stat-products">0</div></div>
+        <div class="card"><h3>Payments today</h3><div id="stat-payments">0</div></div>
+        <div class="card"><h3>Gallery images</h3><div id="stat-gallery">0</div></div>
+        <div class="card"><h3>Errors</h3><div id="stat-errors">0</div></div>
+      </div>
+    </section>
+
+    <section id="products" class="tab">
+      <h2>Products</h2>
+      <div class="toolbar">
+        <button class="btn" id="add-product">Add</button>
+        <button class="btn" id="save-products">Save</button>
+      </div>
+      <table class="table" id="products-table">
+        <thead>
+          <tr><th>ID</th><th>Name</th><th>Price (R)</th><th>Visible</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <section id="gallery" class="tab">
+      <h2>Gallery</h2>
+      <input type="file" id="gallery-upload" multiple accept="image/*" />
+      <div id="gallery-grid" class="grid"></div>
+    </section>
+
+    <section id="payments" class="tab">
+      <h2>Payments</h2>
+      <table class="table" id="payments-table">
+        <thead><tr><th>Order</th><th>Amount</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <section id="pricechanges" class="tab">
+      <h2>Price Changes</h2>
+      <table class="table" id="pl-table">
+        <thead><tr><th>Date</th><th>Product</th><th>Old</th><th>New</th><th>Note</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <section id="logs" class="tab">
+      <h2>Audit & System Logs</h2>
+      <pre id="logs-pre" class="log"></pre>
+    </section>
+  </main>
+
+  <div class="statusbar">CMS: <span id="cms-status">Disconnected</span> • Build: <span id="build">BUILD-2026-01-02-admin-full</span></div>
+
+  <script src="./assets/admin.js" defer></script>
+</body>
+</html>

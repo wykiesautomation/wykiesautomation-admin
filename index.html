@@ -1,0 +1,100 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Wykies Admin</title>
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self' https://accounts.google.com/gsi/client; connect-src 'self' https://admin.wykiesautomation.co.za https://wykiesautomation.co.za">
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo"></div>
+      <div class="title">Wykies Automation — Admin</div>
+    </div>
+    <div class="status">
+      <span id="buildId"></span>
+      <span class="role-badge" id="roleBadge">Signed out</span>
+      <button id="signOutBtn" class="btn btn-outline" hidden>Sign out</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <nav class="sidebar">
+      <button data-tab="overview" class="nav active">Overview</button>
+      <button data-tab="products" class="nav">Products</button>
+      <button data-tab="gallery" class="nav">Gallery</button>
+      <button data-tab="payments" class="nav">Payments</button>
+      <button data-tab="logs" class="nav">Logs</button>
+    </nav>
+    <main class="content">
+      <section id="tab-overview" class="tab active">
+        <div class="grid">
+          <div class="card"><h3>Products</h3><div id="statProducts">—</div></div>
+          <div class="card"><h3>Payments Today</h3><div id="statPayments">—</div></div>
+          <div class="card"><h3>Gallery Images</h3><div id="statGallery">—</div></div>
+          <div class="card error"><h3>Errors</h3><div id="statErrors">—</div></div>
+        </div>
+      </section>
+      <section id="tab-products" class="tab">
+        <div class="card">
+          <div class="card-header">
+            <h3>Catalog</h3>
+            <div class="actions">
+              <button class="btn" id="btnAddProduct">Add Product</button>
+              <label class="toggle"><input type="checkbox" id="mockMode"/> Mock Mode</label>
+            </div>
+          </div>
+          <table class="table" id="tblProducts">
+            <thead><tr><th>ID</th><th>Name</th><th>Price (VAT incl.)</th><th>Visible</th><th>Actions</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+      <section id="tab-gallery" class="tab">
+        <div class="card">
+          <div class="card-header"><h3>Gallery</h3></div>
+          <p>Drag & drop upload coming soon.</p>
+        </div>
+      </section>
+      <section id="tab-payments" class="tab">
+        <div class="card">
+          <div class="card-header"><h3>Payments</h3></div>
+          <table class="table" id="tblPayments">
+            <thead><tr><th>Order</th><th>Email</th><th>Amount</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+      <section id="tab-logs" class="tab">
+        <div class="card">
+          <div class="card-header"><h3>Logs</h3></div>
+          <pre id="logs" class="logs"></pre>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Sign-in overlay -->
+  <div id="signin" class="signin">
+    <div class="panel">
+      <h2>Sign in</h2>
+      <div id="g_id_onload"
+           data-client_id="REPLACE_WITH_GOOGLE_CLIENT_ID"
+           data-auto_prompt="false"
+           data-callback="onGoogleCredential" ></div>
+      <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline"></div>
+      <p class="hint">Allowlist enforced: wykiesautomation@gmail.com → Admin; others → Viewer.</p>
+    </div>
+  </div>
+
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="./app.js"></script>
+</body>
+</html>

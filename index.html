@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Wykies Automation — Admin (Final + Reorder)</title>
+  <meta name="color-scheme" content="dark light" />
+  <link rel="preconnect" href="https://accounts.google.com" crossorigin>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <style>
+    :root { --bg:#0F141C; --surface:#151C24; --text:#E6EDF3; --muted:#9FB4C9; --accent:#2F76FF; --radius:14px; --border:#1f2630; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; background:var(--bg); color:var(--text); }
+    header { display:flex; align-items:center; justify-content:space-between; padding:12px 16px; border-bottom:1px solid var(--border); background:#151C24; position:sticky; top:0; z-index:10; }
+    .brand { display:flex; align-items:center; gap:12px; } .logo { width:32px; height:32px; border-radius:8px; background:#2F76FF; color:#fff; display:grid; place-items:center; font-weight:700; }
+    .role { padding:6px 10px; border-radius:999px; background:#1b2330; color:var(--muted); font-size:0.85rem; }
+    .btn { background:#2F76FF; color:#fff; border:none; padding:10px 14px; border-radius:10px; cursor:pointer; font-weight:600; }
+    .btn.secondary { background:#1b2330; color:var(--text); }
+    .btn.ghost { background:transparent; border:1px solid var(--border); color:var(--text); }
+    .layout { display:grid; grid-template-columns: 220px 1fr; min-height: calc(100vh - 58px); }
+    nav { border-right:1px solid var(--border); background:#0e131a; } nav ul { list-style:none; margin:0; padding:12px; } nav a { display:block; padding:10px 12px; border-radius:8px; color:var(--text); text-decoration:none; }
+    nav a.active, nav a:hover { background:#111926; } main { padding:16px; }
+    .cards { display:grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap:12px; } .card { background:#151C24; border:1px solid var(--border); border-radius: var(--radius); padding:14px; }
+    table { width:100%; border-collapse: collapse; } th, td { border-bottom:1px solid var(--border); padding:10px; text-align:left; } thead th { color: var(--muted); font-weight:600; }
+    .footer { position:sticky; bottom:0; background:#0e131a; border-top:1px solid var(--border); padding:8px 16px; color:var(--muted); display:flex; gap:12px; align-items:center; }
+    .banner { padding:10px 14px; border-radius:10px; background:#172133; border:1px solid #23324a; color:#9fb4c9; }
+    .error { background:#2a1b1b; border-color:#6d2b2b; color:#f5c6c6; }
+    .hidden { display:none; } .input, select, textarea { width:100%; padding:10px; border-radius:10px; border:1px solid #213248; background:#0f141c; color:var(--text); }
+    .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; } .grid3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
+    .toolbar { display:flex; gap:8px; align-items:center; margin-bottom:8px; flex-wrap:wrap; }
+    .badge { display:inline-block; padding:4px 8px; border-radius:999px; background:#1b2330; color:var(--muted); font-size:0.8rem; }
+    .toast { position:fixed; right:16px; bottom:16px; background:#0f1a2a; color:#cfe6ff; border:1px solid #1f3a63; border-radius:10px; padding:10px 14px; opacity:0; transform:translateY(8px); transition:.2s; }
+    .toast.show { opacity:1; transform:translateY(0); }
+    .drop { border:2px dashed #2F76FF55; border-radius:12px; padding:18px; text-align:center; }
+    .drop.drag { background:#0f1b2e; border-color:#2F76FFaa; }
+    .thumbs { display:grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap:12px; }
+    .thumb { position:relative; border:1px solid var(--border); border-radius:10px; overflow:hidden; background:#0f141c; }
+    .thumb img { width:100%; display:block; }
+    .thumb .cap { padding:8px; font-size:.9rem; color:var(--muted); }
+    .thumb .actions { position:absolute; top:8px; right:8px; display:flex; gap:6px; }
+    .thumb.dnd { outline:2px dashed #2F76FF; outline-offset:-6px; cursor:grab; }
+    .thumb.over { box-shadow:0 0 0 2px #2F76FF inset; }
+    .price-cell { cursor:pointer; }
+    .price-edit { display:flex; gap:6px; }
+    .price-input { width:120px; }
+    .note-input { width:200px; }
+    dialog { border:1px solid var(--border); border-radius:12px; background:#0f141c; color:#E6EDF3; padding:16px; }
+    dialog::backdrop { background:rgba(0,0,0,.5); }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand"><div class="logo" aria-hidden="true">WA</div><h1>Admin Dashboard</h1></div>
+    <div class="topbar">
+      <span id="roleBadge" class="role">Signed out</span>
+      <div id="gsiBtn"></div>
+      <button id="signOutBtn" class="btn secondary hidden">Sign out</button>
+    </div>
+  </header>
+  <div class="layout" role="application">
+    <nav aria-label="Main navigation">
+      <ul id="navList">
+        <li><a href="#overview" class="active">Overview</a></li>
+        <li><a href="#products">Catalog</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+        <li><a href="#prices">Price Log</a></li>
+        <li><a href="#payments">Payments</a></li>
+        <li><a href="#pages">Pages</a></li>
+        <li><a href="#settings">Settings</a></li>
+        <li><a href="#audit">Audit</a></li>
+      </ul>
+    </nav>
+    <main id="content" tabindex="-1"></main>
+  </div>
+  <div class="footer" role="status" aria-live="polite">
+    <span id="cmsText">CMS: /api (Apps Script proxy) — Build: admin-final-dnd</span>
+    <span class="badge" id="envBadge">ENV: PROD</span>
+  </div>
+  <div id="toast" class="toast"></div>
+
+  <dialog id="productDialog">
+    <form method="dialog">
+      <h3 id="pdTitle">Add Product</h3>
+      <div class="grid2">
+        <label>ID<br><input id="p_id" class="input" required></label>
+        <label>Name<br><input id="p_name" class="input" required></label>
+      </div>
+      <div class="grid2" style="margin-top:8px">
+        <label>Price (incl VAT)<br><input id="p_price" type="number" step="1" class="input" required></label>
+        <label>Status<br>
+          <select id="p_status" class="input">
+            <option>Active</option>
+            <option>Hidden</option>
+          </select>
+        </label>
+      </div>
+      <div class="toolbar" style="margin-top:12px">
+        <button type="submit" class="btn">Save</button>
+        <button type="button" class="btn secondary" onclick="document.getElementById('productDialog').close()">Cancel</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script>
+    const CONFIG = {
+      apiBase: '/api',
+      clientId: '291364861368-s24qqsvj6bik88452a0tabkp1d41qtv9.apps.googleusercontent.com',
+      fallbackAppsScript: null
+    };
+
+    let AUTH = { token:null, role:'Viewer', email:null };
+
+    const qs = (s,el=document)=>el.querySelector(s);
+    const el = (t,a={},c=[])=>{ const e=document.createElement(t); Object.entries(a).forEach(([k,v])=>k==='class'? e.className=v : k==='html'? e.innerHTML=v : e.setAttribute(k,v)); c.forEach(x=>e.appendChild(typeof x==='string'? document.createTextNode(x):x)); return e; };
+
+    function toast(txt, ok=true){ const t=qs('#toast'); t.textContent=txt; t.style.borderColor = ok? '#1f3a63':'#6d2b2b'; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 1800); }
+
+    async function api(path, opts={}){
+      const base = CONFIG.fallbackAppsScript ? (CONFIG.fallbackAppsScript + (CONFIG.fallbackAppsScript.includes('?')?'&':'?') + 'path=' + encodeURIComponent(path.replace(/^\//,''))) : (CONFIG.apiBase + path);
+      const headers = Object.assign({'Content-Type':'application/json'}, opts.headers||{});
+      if (AUTH && AUTH.token) headers['X-ID-Token'] = AUTH.token;
+      try{
+        const res = await fetch(base, Object.assign({headers}, opts));
+        const ct = res.headers.get('Content-Type')||''; 
+        const body = ct.includes('application/json')? await res.json(): { ok: res.ok };
+        if (!res.ok || body.ok===false) throw new Error(body.error||('HTTP '+res.status));
+        return body;
+      }catch(err){ console.warn('API error', path, err); return { ok:false, error:String(err), data:[] } }
+    }
+
+    function setActive(hash){ document.querySelectorAll('nav a').forEach(a=>a.classList.toggle('active', a.getAttribute('href')===hash)); render((hash||'#overview').slice(1)); }
+    window.addEventListener('hashchange', ()=> setActive(location.hash||'#overview'));
+
+    const views = {
+      async overview(){
+        const r = await api('/overview');
+        const s = r.data||{ salesToday:0, verifiedITNs24h:0, queueHealth: r.ok? 'OK':'API unavailable' };
+        const wrap = el('div');
+        wrap.appendChild(el('div',{class:'cards'},[
+          el('div',{class:'card'},[el('h3',{html:"Today's Sales"}), el('div',{class:'banner',html:`R ${s.salesToday}`})]),
+          el('div',{class:'card'},[el('h3',{html:'Verified ITNs (24h)'}), el('div',{class:'banner',html:String(s.verifiedITNs24h)})]),
+          el('div',{class:'card'},[el('h3',{html:'Queue Health'}), el('div',{class:'banner',html:s.queueHealth})])
+        ]));
+        if (!r.ok) wrap.appendChild(el('div',{class:'banner error',html:'API not reachable. Configure Worker or set fallbackAppsScript.'}));
+        return wrap;
+      },
+
+      async products(){
+        const res = await api('/products');
+        const items = res.data||[];
+        const wrap = el('div');
+        const tools = el('div',{class:'toolbar'},[
+          el('button',{class:'btn', onclick:()=>openProductDialog()},['Add Product']),
+          el('span',{class:'badge'},['Click a Price to edit and Save'])
+        ]);
+        wrap.appendChild(tools);
+
+        const table = el('table');
+        table.appendChild(el('thead',{},[el('tr',{},['ID','Name','Price (incl VAT)','Images','Status'].map(h=>el('th',{},[h])))]));
+        const tbody = el('tbody');
+
+        items.forEach(p=>{
+          const tr = el('tr');
+          const priceCell = el('td',{class:'price-cell'} ,[`R ${Number(p.price||0)}`]);
+          priceCell.addEventListener('click',()=>{
+            if (AUTH.role!=='Admin') return toast('View only', false);
+            priceCell.innerHTML = '';
+            const inp = el('input',{class:'input price-input', type:'number', step:'1', value:p.price||0});
+            const note = el('input',{class:'input note-input', placeholder:'Note (optional)'});
+            const save = el('button',{class:'btn'},['Save']);
+            const cancel = el('button',{class:'btn ghost'},['Cancel']);
+            const row = el('div',{class:'price-edit'},[inp, note, save, cancel]);
+            priceCell.appendChild(row);
+            save.addEventListener('click', async()=>{
+              const newPrice = Number(inp.value||0);
+              if (newPrice===Number(p.price)) { priceCell.textContent = `R ${p.price}`; return; }
+              const update = await api('/products',{ method:'POST', body: JSON.stringify({ id:p.id, name:p.name, price:newPrice, images:p.images||[], status:p.status||'Active' }) });
+              const log = await api('/price-changes',{ method:'POST', body: JSON.stringify({ product_id:p.id, old:p.price, new:newPrice, note: note.value||'' }) });
+              if (update.ok && log.ok){ toast('Price updated'); p.price=newPrice; priceCell.textContent = `R ${newPrice}`; }
+              else { toast('Failed to save price', false); priceCell.textContent = `R ${p.price}`; }
+            });
+            cancel.addEventListener('click',()=> priceCell.textContent = `R ${p.price}`);
+          });
+
+          tr.appendChild(el('td',{},[p.id||'—']));
+          tr.appendChild(el('td',{},[p.name||'—']));
+          tr.appendChild(priceCell);
+          tr.appendChild(el('td',{},[String(p.images?.length||0)]));
+          tr.appendChild(el('td',{},[p.status||'Active']));
+          tbody.appendChild(tr);
+        });
+        table.appendChild(tbody); wrap.appendChild(table);
+        if (!res.ok) wrap.appendChild(el('div',{class:'banner error',html:'Products API unavailable.'}));
+        return wrap;
+      },
+
+      async gallery(){
+        const wrap = el('div');
+        let galleryList = [];
+        let reorderMode = false;
+        let dragIndex = null;
+
+        const alt = el('input',{class:'input', id:'alt', placeholder:'Alt text (required)'});
+        const drop = el('div',{class:'drop', id:'drop'},['Drag & drop images here (≤ 200KB, PNG/JPG/WebP). Or click to choose.']);
+        const pick = el('input',{type:'file', accept:'image/*', multiple:'true', class:'hidden', id:'picker'});
+        drop.tabIndex = 0; drop.addEventListener('click',()=> pick.click());
+        const reorderBtn = el('button',{class:'btn ghost', id:'reorderBtn'},['Reorder: Off']);
+        reorderBtn.addEventListener('click',()=>{ reorderMode = !reorderMode; reorderBtn.textContent = 'Reorder: ' + (reorderMode? 'On':'Off'); renderThumbs(galleryList); });
+
+        const tool = el('div',{class:'toolbar'},[ el('div',{},[el('label',{},['Alt text']), alt]), drop, pick, el('span',{class:'badge'},['Drag tiles when Reorder is On']), reorderBtn ]);
+        wrap.appendChild(tool);
+
+        function dragState(on){ drop.classList.toggle('drag', on); }
+        ;['dragenter','dragover'].forEach(ev=> drop.addEventListener(ev, e=>{ e.preventDefault(); dragState(true); }));
+        ;['dragleave','drop'].forEach(ev=> drop.addEventListener(ev, e=>{ e.preventDefault(); dragState(false); }));
+
+        async function handleFiles(files){
+          const a = (alt.value||'').trim(); if (!a) { toast('Alt text required', false); return; }
+          for (const f of files){
+            if (!/^image\//.test(f.type)) { toast('Only images allowed', false); continue; }
+            if (f.size > 200*1024){ toast(`${f.name}: too large (>200KB)`, false); continue; }
+            const dataUrl = await new Promise(r=>{ const fr=new FileReader(); fr.onload=()=>r(fr.result); fr.readAsDataURL(f); });
+            const up = await api('/gallery/upload',{ method:'POST', body: JSON.stringify({ name:f.name, alt:a, dataUrl }) });
+            if (up.ok) toast(`Uploaded ${f.name}`); else toast(`Failed: ${f.name}`, false);
+          }
+          const res = await api('/gallery'); galleryList = res.data||[]; renderThumbs(galleryList);
+        }
+        drop.addEventListener('drop', e=> handleFiles(e.dataTransfer.files));
+        pick.addEventListener('change', e=> handleFiles(e.target.files));
+
+        const grid = el('div',{class:'thumbs', id:'thumbs'}); wrap.appendChild(grid);
+
+        function move(arr, from, to){ if (from===to) return arr; const x=arr.splice(from,1)[0]; arr.splice(to,0,x); return arr; }
+
+        function renderThumbs(list){
+          grid.innerHTML='';
+          if (!list.length){ grid.appendChild(el('div',{class:'banner'},['No images'])); return; }
+          list.forEach((g,idx)=>{
+            const card = el('div',{class:'thumb' + (reorderMode? ' dnd':''), draggable: reorderMode? 'true':'false', 'data-idx': idx});
+            card.appendChild(el('img',{src:g.src||'', alt:g.alt||'Image'}));
+            const cap = el('div',{class:'cap'},[ g.alt || '' ]);
+            const actions = el('div',{class:'actions'},[
+              el('button',{class:'btn ghost', onclick:async()=>{ const r=await api('/gallery/delete',{ method:'POST', body: JSON.stringify({ src:g.src }) }); if(r.ok){ toast('Deleted'); const res=await api('/gallery'); galleryList=res.data||[]; renderThumbs(galleryList);} else toast('Delete failed', false); }},['Delete'])
+            ]);
+            card.appendChild(actions); card.appendChild(cap); grid.appendChild(card);
+
+            if (reorderMode){
+              card.addEventListener('dragstart', (e)=>{ dragIndex = Number(card.dataset.idx); card.classList.add('over'); e.dataTransfer.effectAllowed = 'move'; });
+              card.addEventListener('dragover', (e)=>{ e.preventDefault(); e.dataTransfer.dropEffect = 'move'; card.classList.add('over'); });
+              card.addEventListener('dragleave', ()=> card.classList.remove('over'));
+              card.addEventListener('drop', async (e)=>{
+                e.preventDefault(); card.classList.remove('over');
+                const targetIndex = Number(card.dataset.idx);
+                if (dragIndex==null || dragIndex===targetIndex) return;
+                move(galleryList, dragIndex, targetIndex);
+                renderThumbs(galleryList);
+                dragIndex = null;
+                const payload = { order: galleryList.map(x=>x.src) };
+                const r = await api('/gallery/reorder',{ method:'POST', body: JSON.stringify(payload) });
+                toast(r.ok? 'Order saved' : 'Reorder failed', r.ok);
+              });
+              card.addEventListener('dragend', ()=> card.classList.remove('over'));
+            }
+          });
+          Array.from(grid.children).forEach((c,i)=> c.dataset.idx = i);
+        }
+
+        const init = await api('/gallery'); galleryList = init.data||[]; renderThumbs(galleryList);
+        if (!init.ok) wrap.appendChild(el('div',{class:'banner error',html:'Gallery API unavailable.'}));
+        return wrap;
+      },
+
+      async prices(){
+        const r = await api('/price-changes'); const rows = r.data||[];
+        const wrap = el('div'); const table = el('table');
+        table.appendChild(el('thead',{},[el('tr',{},['Product ID','Old','New','Who','When','Note'].map(h=>el('th',{},[h])))]));
+        const tbody = el('tbody'); rows.forEach(p=>tbody.appendChild(el('tr',{},[
+          el('td',{},[p.product_id]), el('td',{},[`R ${p.old}`]), el('td',{},[`R ${p.new}`]), el('td',{},[p.who]), el('td',{},[p.when]), el('td',{},[p.note||''])
+        ]))); table.appendChild(tbody); wrap.appendChild(table);
+        if (!r.ok) wrap.appendChild(el('div',{class:'banner error',html:'Price Log API unavailable.'}));
+        return wrap;
+      },
+
+      async payments(){
+        const r = await api('/payments'); const rows = r.data||[]; const wrap = el('div'); const table = el('table');
+        table.appendChild(el('thead',{},[el('tr',{},['Date','Order','Email','Total','Status',''] .map(h=>el('th',{},[h])))]));
+        const tbody = el('tbody'); rows.forEach(p=>tbody.appendChild(el('tr',{},[
+          el('td',{},[p.date]), el('td',{},[p.order]), el('td',{},[p.email]), el('td',{},[`R ${p.total}`]), el('td',{},[p.status]),
+          el('td',{},[ AUTH.role==='Admin'? el('button',{class:'btn', onclick:async()=>{ const r=await api(`/payments/${p.order}/resend-invoice`,{ method:'POST' }); toast(r.ok?'Invoice resent':'Resend failed', r.ok); }},['Resend Invoice']) : document.createTextNode('') ])
+        ]))); table.appendChild(tbody); wrap.appendChild(table); if (!r.ok) wrap.appendChild(el('div',{class:'banner error',html:'Payments API unavailable.'})); return wrap;
+      },
+
+      async pages(){
+        const res = await api('/pages'); const list = res.data||[];
+        const wrap = el('div');
+        const select = el('select',{class:'input', id:'pageSel'});
+        list.forEach(p=> select.appendChild(el('option',{value:p.slug},[p.slug])));
+        select.appendChild(el('option',{value:'__new__'},['+ New page…']));
+        const title = el('input',{class:'input', id:'pageTitle', placeholder:'Title'});
+        const slug = el('input',{class:'input', id:'pageSlug', placeholder:'slug'});
+        const ta = el('textarea',{id:'pageContent', class:'input', rows:'12', placeholder:'Markdown content'});
+        const preview = el('div',{class:'card', id:'preview', style:'margin-top:8px;'},['Preview will render here…']);
+        const bar = el('div',{class:'toolbar'},[
+          el('button',{class:'btn', onclick: async()=>{
+            if (AUTH.role!=='Admin') return toast('View only', false);
+            const payload = { slug: slug.value.trim(), title:title.value.trim(), content: ta.value };
+            if (!payload.slug) return toast('Slug required', false);
+            const r = await api('/pages',{ method:'POST', body: JSON.stringify(payload) });
+            toast(r.ok?'Saved':'Save failed', r.ok);
+          }},['Save']),
+          el('button',{class:'btn secondary', onclick:()=>{ const md=ta.value; preview.innerHTML = md.replace(/\#\# (.*)/g,'<h2>$1</h2>').replace(/\n/g,'<br>'); }},['Preview'])
+        ]);
+        wrap.appendChild(el('div',{class:'grid3'},[
+          el('div',{},[el('label',{},['Select Page']), select]),
+          el('div',{},[el('label',{},['Slug']), slug]),
+          el('div',{},[el('label',{},['Title']), title])
+        ]));
+        wrap.appendChild(ta); wrap.appendChild(bar); wrap.appendChild(preview);
+
+        function loadPage(pg){ slug.value = pg?.slug||''; title.value = pg?.title||''; ta.value = pg?.content||''; preview.innerHTML='Preview will render here…'; }
+        loadPage(list[0]);
+        select.addEventListener('change', async()=>{
+          const v = select.value;
+          if (v==='__new__'){ loadPage({slug:'', title:'', content:''}); return; }
+          const cur = list.find(x=>x.slug===v); loadPage(cur);
+        });
+        if (!res.ok) wrap.appendChild(el('div',{class:'banner error',html:'Pages API unavailable.'}));
+        return wrap;
+      },
+
+      async settings(){
+        const r = await api('/settings'); const s = r.data||{}; const wrap = el('div');
+        function field(label,key,type='text'){ return el('div',{},[ el('label',{},[label]), el('input',{class:'input', id:`set_${key}`, value:s[key]||'', type}) ]); }
+        wrap.appendChild(el('div',{class:'grid2'},[ field('Company Name','companyName'), field('VAT Number','vatNumber') ]));
+        wrap.appendChild(el('div',{class:'grid2'},[ field('Registered Address','address'), field('Support Email','supportEmail','email') ]));
+        wrap.appendChild(el('div',{class:'grid2'},[ field('Logo URL','logoUrl','url'), field('Brand Color','brandColor','color') ]));
+        if (AUTH.role==='Admin') wrap.appendChild(el('div',{class:'toolbar'},[ el('button',{class:'btn', onclick:async()=>{
+          const payload = ['companyName','vatNumber','address','supportEmail','logoUrl','brandColor'].reduce((o,k)=> (o[k]=qs('#set_'+k).value, o),{});
+          const r = await api('/settings', { method:'POST', body: JSON.stringify(payload) }); toast(r.ok?'Settings saved':'Save failed', r.ok);
+        }},['Save Settings']) ]));
+        if (!r.ok) wrap.appendChild(el('div',{class:'banner error',html:'Settings API unavailable.'}));
+        return wrap;
+      },
+
+      async audit(){
+        const r = await api('/audit'); const rows = r.data||[]; const wrap = el('div'); const table = el('table');
+        table.appendChild(el('thead',{},[el('tr',{},['Timestamp','User','Action','Before','After'].map(h=>el('th',{},[h])))]));
+        const tbody = el('tbody'); rows.forEach(a=>tbody.appendChild(el('tr',{},[el('td',{},[a.when]), el('td',{},[a.who]), el('td',{},[a.action]), el('td',{},[a.before||'']), el('td',{},[a.after||''])]))); table.appendChild(tbody); wrap.appendChild(table); if (!r.ok) wrap.appendChild(el('div',{class:'banner error',html:'Audit API unavailable.'})); return wrap;
+      }
+    };
+
+    async function render(view){ const c=qs('#content'); c.innerHTML=''; try{ const v = views[view]? await views[view](): el('div',{},['Not found']); c.appendChild(v); c.focus(); } catch(err){ c.appendChild(el('div',{class:'banner error',html:'Render error: '+String(err)})); } }
+
+    function initGSI(){ if (!window.google || !google.accounts?.id) return; google.accounts.id.initialize({ client_id: CONFIG.clientId, callback: onGoogleCredential }); google.accounts.id.renderButton(qs('#gsiBtn'), { theme:'outline', size:'medium' }); }
+    async function onGoogleCredential(resp){ const data = await api('/google-auth', { method:'POST', body: JSON.stringify({ credential: resp.credential }) }); if (!data.ok){ toast('Sign-in failed', false); return; } AUTH={ token:resp.credential, role:data.data.role, email:data.data.email }; qs('#roleBadge').textContent = `${data.data.role} — ${data.data.email}`; qs('#signOutBtn').classList.remove('hidden'); setActive('#overview'); }
+    qs('#signOutBtn').addEventListener('click', ()=>{ AUTH={ token:null, role:'Viewer', email:null }; qs('#roleBadge').textContent='Signed out'; qs('#signOutBtn').classList.add('hidden'); });
+
+    qs('#navList').addEventListener('click', (ev)=>{ const a = ev.target.closest('a[href^="#"]'); if (!a) return; ev.preventDefault(); const hash=a.getAttribute('href'); if (location.hash!==hash) location.hash=hash; else setActive(hash); });
+
+    function openProductDialog(p){ const d=qs('#productDialog'); qs('#pdTitle').textContent = p? 'Edit Product':'Add Product'; qs('#p_id').value = p?.id||''; qs('#p_id').disabled = !!p; qs('#p_name').value = p?.name||''; qs('#p_price').value = p?.price||0; qs('#p_status').value = p?.status||'Active'; d.showModal(); d.querySelector('form').onsubmit = async (e)=>{ e.preventDefault(); if (AUTH.role!=='Admin') { toast('View only', false); d.close(); return; } const payload = { id:qs('#p_id').value.trim(), name:qs('#p_name').value.trim(), price:Number(qs('#p_price').value||0), images:[], status:qs('#p_status').value }; if (!payload.id || !payload.name) { toast('ID and Name required', false); return; } const r = await api('/products', { method:'POST', body: JSON.stringify(payload) }); toast(r.ok?'Saved':'Save failed', r.ok); d.close(); setActive('#products'); } }
+    window.openProductDialog = openProductDialog;
+
+    window.addEventListener('load', ()=>{ initGSI(); setActive(location.hash||'#overview'); });
+  </script>
+</body>
+</html>

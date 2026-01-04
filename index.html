@@ -127,7 +127,7 @@
     const CONFIG = {
       apiBase: '/api', // used later when you switch to Cloudflare Worker
       clientId: '291364861368-s24qqsvj6bik88452a0tabkp1d41qtv9.apps.googleusercontent.com',
-      // PRECONFIGURED: use your Apps Script Web App directly (action-based API)
+      // PRECONFIGURED: Apps Script Web App (action-based API)
       fallbackAppsScript: 'https://script.google.com/macros/s/AKfycbwHuhjZ7YP7XMfJVrPlaBimM8dOweFtb6dCOe8QUOZlYAllepuSuJU7F52kzd20eMJZgQ/exec'
       // When Worker /api is live: set fallbackAppsScript: null
     };
@@ -155,14 +155,14 @@
       method = method.toUpperCase();
       // special case: payments resend
       const m = path.match(/^\/payments\/(.+)\/resend-invoice$/);
-      if (m && method==='POST') return { action:'resendInvoice', transform:(data)=>({ order:m[1] }) };
+      if (m && method==='POST') return { action:'resendInvoice', transform:(_)=>({ order:m[1] }) };
 
       const map = {
         'GET /overview'         : { action:'dashboard' },
         'GET /products'         : { action:'listProducts' },
         'POST /products'        : { action:'addProduct' },
         'GET /price-changes'    : { action:'listPriceLog' },
-        'POST /price-changes'   : { action:'changePrice' },
+        'POST /price-changes'   : { action:'changePrice' },   // expects {product_id,new_price,note}
         'GET /payments'         : { action:'listPayments' },
         'GET /pages'            : { action:'listPages' },
         'POST /pages'           : { action:'savePage' },
@@ -228,7 +228,6 @@
       async overview(){
         const r = await api('/overview');
         const s = (r && r.data && r.data.data) || { salesToday:'R 0', itn24h:0, queueHealth:'OK' };
-        // normalize fields across both modes
         const sales = s.salesToday || s.sales || 0;
         const verified = s.verifiedITNs24h || s.itn24h || 0;
         const health = s.queueHealth || 'OK';
@@ -244,7 +243,6 @@
 
       async products(){
         const r = await api('/products');
-        // Apps Script returns {ok:true, data:[...]} inside r.data; Worker returns {ok:true, data:[...]}.
         const items = (r && r.data && (r.data.data || r.data)) || [];
         const wrap = el('div');
         const tools = el('div',{class:'toolbar'},[
@@ -277,13 +275,11 @@
               if (newPrice===priceValue) { priceCell.textContent = `R ${priceValue}`; return; }
 
               if (isAppsScriptMode()){
-                // Apps Script expects two calls: addProduct & changePrice
                 await api('/products',{ method:'POST', body: { id:p.id, name:p.name||'', price:newPrice, images:[], status:p.status||'active' }});
                 const log = await api('/price-changes',{ method:'POST', body: { product_id:p.id, new_price:newPrice, note: note.value||'' }});
                 if (log.ok) { toast('Price updated'); priceCell.textContent = `R ${newPrice}`; }
                 else { toast('Failed to save price', false); priceCell.textContent = `R ${priceValue}`; }
               } else {
-                // REST mode
                 const update = await api('/products',{ method:'POST', body: { id:p.id, name:p.name||'', price:newPrice, images:[], status:p.status||'Active' }});
                 const log = await api('/price-changes',{ method:'POST', body: { product_id:p.id, old:priceValue, new:newPrice, note: note.value||'' }});
                 if (update.ok && log.ok){ toast('Price updated'); priceCell.textContent = `R ${newPrice}`; }
@@ -424,13 +420,9 @@
           el('td',{},[
             AUTH.role==='Admin'
               ? el('button',{class:'btn', onclick:async()=>{
-                  if (isAppsScriptMode()){
-                    const r = await api(`/payments/${p.order || p.m_payment_id}/resend-invoice`,{ method:'POST', body:{} });
-                    toast(r.ok?'Invoice resent':'Resend failed', r.ok);
-                  } else {
-                    const r = await api(`/payments/${p.order}/resend-invoice`,{ method:'POST' });
-                    toast(r.ok?'Invoice resent':'Resend failed', r.ok);
-                  }
+                  const orderId = p.order || p.m_payment_id;
+                  const r=await api(`/payments/${orderId}/resend-invoice`,{ method:'POST', body:{} });
+                  toast(r.ok?'Invoice resent':'Resend failed', r.ok);
                 }},['Resend Invoice'])
               : document.createTextNode('')
           ])
@@ -480,25 +472,6 @@
         return wrap;
       },
 
-      async settings(){
-        const r = await api('/settings'); const s = (r && r.data && (r.data.data || r.data)) || {};
-        const wrap = el('div');
-        function field(label,key,type='text'){ return el('div',{},[ el('label',{},[label]), el('input',{class:'input', id:`set_${key}`, value:s[key]||'', type}) ]); }
-        wrap.appendChild(el('div',{class:'grid2'},[ field('Company Name','companyName'), field('VAT Number','vatNumber') ]));
-        wrap.appendChild(el('div',{class:'grid2'},[ field('Registered Address','registeredAddress'), field('Support Email','supportEmail','email') ]));
-        wrap.appendChild(el('div',{class:'grid2'},[ field('Logo URL','logoUrl','url'), field('Brand Color','brandColor','color') ]));
-        if (AUTH.role==='Admin') wrap.appendChild(el('div',{class:'toolbar'},[
-          el('button',{class:'btn', onclick:async()=>{
-            const payload = ['companyName','vatNumber','registeredAddress','supportEmail','logoUrl','brandColor']
-                              .reduce((o,k)=> (o[k]=qs('#set_'+k).value, o),{});
-            const r = await api('/settings', { method:'POST', body: payload });
-            toast(r.ok?'Settings saved':'Save failed', r.ok);
-          }},['Save Settings'])
-        ]));
-        if (!r.ok) wrap.appendChild(el('div',{class:'banner error',html:'Settings API unavailable.'}));
-        return wrap;
-      },
-
       async audit(){
         const r = await api('/audit'); const rows = (r && r.data && (r.data.data || r.data)) || [];
         const wrap = el('div'); const table = el('table');
@@ -517,10 +490,17 @@
       }
     };
 
+    // ---------- FIXED render() ----------
     async function render(view){
-      const c=qs('#content'); c.innerHTML='';
-      try{ const v = views[view]? await viewsview: el('div',{},['Not found']); c.appendChild(v); c.focus(); }
-      catch(err){ c.appendChild(el('div',{class:'banner error',html:'Render error: '+String(err)})); }
+      const c = qs('#content');
+      c.innerHTML = '';
+      try{
+        const v = views[view] ? await viewsview : el('div', {}, ['Not found']);
+        c.appendChild(v);
+        c.focus();
+      }catch(err){
+        c.appendChild(el('div',{class:'banner error',html:'Render error: '+String(err)}));
+      }
     }
 
     // ---------- Auth (Google Identity Services) ----------
@@ -536,10 +516,9 @@
       }catch(_){ return null; }
     }
     async function onGoogleCredential(resp){
-      // In Apps Script mode we only need the email for allowlist
       const email = parseJwtEmail(resp.credential);
       if (!email){ toast('Sign-in failed (no email)', false); return; }
-      AUTH={ token:resp.credential, role:'Admin', email }; // allowlist enforced server-side
+      AUTH={ token:resp.credential, role:'Admin', email }; // allowlist enforced server-side in Apps Script
       qs('#roleBadge').textContent = `Admin — ${email}`;
       qs('#signOutBtn').classList.remove('hidden');
       setActive('#overview');
